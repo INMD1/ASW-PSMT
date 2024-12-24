@@ -129,7 +129,7 @@ function Topnav() {
               alt=""
             />
             <div className="w-3"></div>
-            <p className="title">D Cloud Platform</p>
+            <p className="title">ASW-Practice VM</p>
           </div>
           {/* 로고 입력부분 */}
           <div className="flex">
@@ -144,7 +144,7 @@ function Topnav() {
                       >
                         <Avatar className="w-[auto] h-[4vh]">
                           <AvatarImage src="./image/Windows-10-user-icon-big.png" />
-                          <AvatarFallback>CN</AvatarFallback>
+                          <AvatarFallback>NULL</AvatarFallback>
                         </Avatar>
                         ㅤ
                         <p style={{ fontSize: "1.5em", fontWeight: "bold" }}>

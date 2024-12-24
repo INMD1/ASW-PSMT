@@ -68,9 +68,9 @@ function Mainpage_index() {
             <div className="xl:flex md:grid  justify-center  items-center flex-nowrap gap-20 " >
                 <div className="grid custon-with mt-10">
                     <div className="m-5 xl:m-20">
-                        <p className="mianpage_header">저희는 서버가 필요하는</p>
-                        <p className="mianpage_header">프로젝트에 무상으로 서버를</p>
-                        <p className="mianpage_header">지원해 드리고 있습니다.</p>
+                        <p className="mianpage_header">동의대학교</p>
+                        <p className="mianpage_header">응용소프트웨어공학과 실습VM관리</p>
+                        <p className="mianpage_header">플랫폼에 오신걸 환영합니다.</p>
                         <div className="lg:h-10 h-5"></div>
                         <p className="mianpage_sidheader ">프로젝트를 하는데 서버 비용이 문제라면 저희 서버를 한번 이용해보세요.</p>
                         <div className="flex lg:justify-end mt-3 lg:mt-5 ">
@@ -92,40 +92,8 @@ function Mainpage_index() {
                             <div>
                                 <Card>
                                     <CardHeader>
-                                        <CardTitle>Computer1</CardTitle>
+                                        <CardTitle>실습 전용 서버</CardTitle>
                                         <CardDescription>{statuses.Computer1}</CardDescription>
-                                    </CardHeader>
-                                </Card>
-                            </div>
-                            <div>
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle>Computer2</CardTitle>
-                                        <CardDescription>{statuses.Computer2}</CardDescription>
-                                    </CardHeader>
-                                </Card>
-                            </div>
-                            <div>
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle>Computer3</CardTitle>
-                                        <CardDescription>{statuses.Computer3}</CardDescription>
-                                    </CardHeader>
-                                </Card>
-                            </div>
-                            <div>
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle>Computer4</CardTitle>
-                                        <CardDescription>{statuses.Computer4}</CardDescription>
-                                    </CardHeader>
-                                </Card>
-                            </div>
-                            <div>
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle>Computer5</CardTitle>
-                                        <CardDescription>{statuses.Computer5}</CardDescription>
                                     </CardHeader>
                                 </Card>
                             </div>
@@ -162,22 +130,6 @@ function Mainpage_index() {
                                     <TableRow>
                                         <TableCell>Compute1</TableCell>
                                         <TableCell>{statuses.Computer1}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell>Compute2</TableCell>
-                                        <TableCell>{statuses.Computer2}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell>Compute3</TableCell>
-                                        <TableCell>{statuses.Computer3}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell>Compute4</TableCell>
-                                        <TableCell>{statuses.Computer4}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell>Compute5</TableCell>
-                                        <TableCell>{statuses.Computer5}</TableCell>
                                     </TableRow>
                                 </TableBody>
                             </Table>
