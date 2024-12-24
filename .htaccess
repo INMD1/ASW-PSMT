@@ -1,0 +1,10 @@
+RewriteEngine On
+
+# site 폴더의 실제 파일은 직접 제공
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^site/(.*)$ site/$1 [L]
+
+# 모든 요청을 public/index.php로 전달
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ public/index.php [L]
