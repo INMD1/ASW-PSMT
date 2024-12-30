@@ -69,7 +69,7 @@ function Mainpage_index() {
                 <div className="grid custon-with mt-10">
                     <div className="m-5 xl:m-20">
                         <p className="mianpage_header">동의대학교</p>
-                        <p className="mianpage_header">응용소프트웨어공학과 실습VM관리</p>
+                        <p className="mianpage_header">응용소프트웨어공학과 실습 지원</p>
                         <p className="mianpage_header">플랫폼에 오신걸 환영합니다.</p>
                         <div className="lg:h-10 h-5"></div>
                         <p className="mianpage_sidheader ">프로젝트를 하는데 서버 비용이 문제라면 저희 서버를 한번 이용해보세요.</p>
