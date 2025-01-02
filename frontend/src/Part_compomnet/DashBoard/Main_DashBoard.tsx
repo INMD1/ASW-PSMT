@@ -114,7 +114,7 @@ function Main_DashBoard() {
     try {
       const response = await fetch(
         //@ts-ignore
-        `/api/server_application/?username=${userInfo.name}&email=${userInfo.email}&type=user`
+        `/api/server_application/?username=${userinfo.name}&email=${userinfo.email}&type=user`
       );
       const restApi = await response.json();
 

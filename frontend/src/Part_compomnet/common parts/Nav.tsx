@@ -42,7 +42,7 @@ function Topnav() {
         setUserInfo({});
         setlogCount(0);
         setAccessjwt({});
-        window.location.reload();
+        navigate("/site");
       }
     });
   }
@@ -129,7 +129,7 @@ function Topnav() {
               alt=""
             />
             <div className="w-3"></div>
-            <p className="title">ASW-Practice VM</p>
+            <p className="title">D Cloud Platform</p>
           </div>
           {/* 로고 입력부분 */}
           <div className="flex">
@@ -144,7 +144,7 @@ function Topnav() {
                       >
                         <Avatar className="w-[auto] h-[4vh]">
                           <AvatarImage src="./image/Windows-10-user-icon-big.png" />
-                          <AvatarFallback>NULL</AvatarFallback>
+                          <AvatarFallback>CN</AvatarFallback>
                         </Avatar>
                         ㅤ
                         <p style={{ fontSize: "1.5em", fontWeight: "bold" }}>
