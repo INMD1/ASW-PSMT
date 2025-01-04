@@ -38,6 +38,8 @@ $refreshConfig = Configuration::forSymmetricSigner(
     InMemory::base64Encoded(base64_encode($_ENV['JWT_KEY_Refresh']))
 );
 
+
+
 //ID소금 치기 위한 함수(재활용)
 function insertRandomLetters($numbers)
 {
