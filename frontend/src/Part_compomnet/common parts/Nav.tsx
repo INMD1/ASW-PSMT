@@ -129,7 +129,7 @@ function Topnav() {
               alt=""
             />
             <div className="w-3"></div>
-            <p className="title">D Cloud Platform</p>
+            <p className="title">ASW Practice VM Platform</p>
           </div>
           {/* 로고 입력부분 */}
           <div className="flex">
