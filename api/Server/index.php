@@ -206,7 +206,7 @@ if ($request_method == 'GET') {
                                                     <li>필요한 추가 정보나 자원이 있다면 알려주시기 바랍니다.</li>
                                                 </ol>
                                                 
-                                                <p>궁금한 점이나 추가 요청사항이 있으시면 아래에 연락처로 언제든 연락 주시기 바랍니다.</p>
+                                                <p>궁금한 점이나 추가 요청사항이 있으시면 아래 연락처로 언제든지 문의해 주시기 바랍니다. 빠른 처리가 필요하신 경우, 아래 관리자 이메일로 요청해 주시면 신속히 대응해 드리겠습니다.</p>
                                                 
                                                 <p style=\"margin-top: 20px;\">감사합니다.</p>
 
@@ -216,7 +216,7 @@ if ($request_method == 'GET') {
                                             </div>
                                         </body>
                                     </html>";
-                        send_to_mail($email, $input["Servername"] . '서버 제작 승인 안내', $message);
+                        send_to_mail($input["email"], $input["Servername"] . '서버 제작 승인 안내', $message);
                     } else if ($Appcet == 381) {
                         $servername = $input["Servername"];
                         $region = $input["region"];
@@ -266,7 +266,7 @@ if ($request_method == 'GET') {
                                             </div>
                                         </body>
                                     </html>";
-                        send_to_mail($email, $input["Servername"] . ' 서버 제작 완료 안내', $message);
+                        send_to_mail($input["email"], $input["Servername"] . ' 서버 제작 완료 안내', $message);
                     } else {
                         $servername = $input["Servername"];
                         $date = date("Y-m-d", time());
@@ -304,7 +304,7 @@ if ($request_method == 'GET') {
                                             </div>
                                         </body>
                                     </html>";
-                        send_to_mail($email, $input["Servername"] . '서버 제작 거절 안내', $message);
+                        send_to_mail($input["email"], $input["Servername"] . '서버 제작 거절 안내', $message);
                     }
                     http_response_code(200);
                     echo json_encode(['message' => $input['name']]);
