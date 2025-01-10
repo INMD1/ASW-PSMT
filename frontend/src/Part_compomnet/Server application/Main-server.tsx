@@ -36,6 +36,8 @@ import { Checkbox } from "@radix-ui/react-checkbox";
 import { useAtom } from "jotai";
 import { login_Count, User_info } from "@/store/strore_data";
 import { useNavigate } from "react-router-dom";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea"
 
 const source = `
 # 서비스 이용약관
@@ -111,19 +113,25 @@ const source = `
 7. 기존에 서버에 저장되어 있던 데이터가 어떠한 이유로든 상실된 경우, 이에 대한 책임은 전적으로 고객에게 있습니다. 기관은 이로 인해 발생하는 어떠한 손해에 대해서도 책임을 지지 않습니다.
 `;
 
+interface userinfo {
+  email: string;
+  name: string;
+  phone_number: string;
+  password: string;
+  student_id: string;
+  created_at: string;
+  updated_at: null;
+  student_class: string;
+  Admin: number;
+}
+
 const FormSchema = z.object({
-  name: z.string().min(1, "이름은 필수 항목입니다."),
-  email: z.string().email("유효한 이메일을 입력하세요."),
-  phone_number: z.string().min(10, "전화번호를 입력하세요."),
   Application_period: z.string(),
   Reason_for_renta: z.string(),
   Servername: z.string().min(1, "필수 항목입니다."),
   Username: z.string().min(1, "필수 항목입니다."),
   User_pw: z.string().min(5, "5자리 이싱 및 필수 항목입니다."),
   root_pw: z.string().min(5, "5자리 이싱 및 필수 항목입니다."),
-  CPU: z.string().min(1, "필수 항목입니다."),
-  RAM: z.string().min(1, "필수 항목입니다."),
-  Storage: z.string().min(1, "필수 항목입니다."),
   Network_Requirements: z.string(),
   iamcheck: z.boolean().refine((val) => val === true, {
     message: "서비스 이용 약관에 동의해야 합니다.",
@@ -131,10 +139,10 @@ const FormSchema = z.object({
 });
 
 const options = [
-  { value: "ubuntu24", label: "Ubuntu 24.04.1" },
-  { value: "ubuntu22", label: "Ubuntu 22.04.5" },
-  { value: "ubuntu20", label: "Ubuntu 20.04.6" },
-  { value: "ubuntu18", label: "Ubuntu 18.04.6" },
+  { value: "ubuntu24", label: "Ubuntu 24.04.1 LTS" },
+  { value: "ubuntu22", label: "Ubuntu 22.04.5 LTS" },
+  { value: "ubuntu20", label: "Ubuntu 20.04.6 LTS" },
+  { value: "ubuntu18", label: "Ubuntu 18.04.6 LTS" },
   { value: "debian", label: "Debian 12.8.0" },
   { value: "rocky9", label: "Rocky 9.5" },
   { value: "rocky8", label: "Rocky 8.9" },
@@ -142,12 +150,13 @@ const options = [
 
 function Main_server({ className }: React.HTMLAttributes<HTMLDivElement>) {
   const [date, setDate] = React.useState<DateRange | undefined>({
-    from: new Date(2024, 0, 20),
-    to: addDays(new Date(2025, 0, 20), 20),
-  });
+    from: new Date(),
+    to: addDays(new Date(), 366 + 20),
+  });  
   const navigate = useNavigate();
   const [userinfo] = useAtom(User_info);
-  const info = userinfo;
+  //@ts-ignore
+  const info: userinfo = userinfo;
 
   const [logCount] = useAtom(login_Count);
 
@@ -155,18 +164,12 @@ function Main_server({ className }: React.HTMLAttributes<HTMLDivElement>) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      phone_number: "",
       Application_period: "",
       Reason_for_renta: "",
       Servername: "",
       Username: "",
       User_pw: "",
       root_pw: "",
-      CPU: "",
-      RAM: "",
-      Storage: "",
       Network_Requirements: "",
       //@ts-ignore
       iamcheck: false,
@@ -176,8 +179,16 @@ function Main_server({ className }: React.HTMLAttributes<HTMLDivElement>) {
   // const navigate = useNavigate();
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
+    console.log("click");
+    
     if (logCount == 1) {
       let json = data;
+      //@ts-ignore
+      json.name =  info.name;
+      //@ts-ignore
+      json.email =  info.email;
+      //@ts-ignore
+      json.phone_number =  info.phone_number;
       //@ts-ignore
       json.os = selectedOption.label;
       //@ts-ignore
@@ -260,49 +271,12 @@ function Main_server({ className }: React.HTMLAttributes<HTMLDivElement>) {
                 <div className="grid md:flex gap-x-8 grow">
                   <div className="grid">
                     <p className="flex server_sub_sub_title">사용자 정보</p>
-                    <FormField
-                      control={form.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>이름</FormLabel>
-                          <FormControl>
-                            <Input placeholder="이름" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    ></FormField>
-                    <FormField
-                      control={form.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>이메일</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="이메일"
-                              type="email"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    ></FormField>
-                    <FormField
-                      control={form.control}
-                      name="phone_number"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>전화번호</FormLabel>
-                          <FormControl>
-                            <Input placeholder="전화번호" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    ></FormField>
+                    <Label htmlFor="terms">이름</Label>
+                    <Input placeholder={info.name} disabled />
+                    <Label htmlFor="terms">이메일</Label>
+                    <Input placeholder={info.email} disabled />
+                    <Label htmlFor="terms">전화번호</Label>
+                    <Input placeholder={info.phone_number} disabled />
                     <p className="flex server_sub_sub_title">대여 정보</p>
                     <div className={cn("grid gap-2", className)}>
                       <Popover>
@@ -343,12 +317,12 @@ function Main_server({ className }: React.HTMLAttributes<HTMLDivElement>) {
                       </Popover>
                       <FormField
                         control={form.control}
-                        name="Reason_for_renta"
+                        name="Application_period"
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>대여사유</FormLabel>
                             <FormControl>
-                              <Input
+                              <Textarea
                                 className="h-60"
                                 placeholder=""
                                 {...field}
@@ -376,7 +350,7 @@ function Main_server({ className }: React.HTMLAttributes<HTMLDivElement>) {
                       )}
                     ></FormField>
                     <FormItem>
-                      <FormLabel>운영체제</FormLabel>
+                      <FormLabel>서버 타입</FormLabel>
                       <FormControl>
                         <Select
                           className="my-react-select-container"
@@ -390,59 +364,7 @@ function Main_server({ className }: React.HTMLAttributes<HTMLDivElement>) {
                       </FormControl>
                       <FormMessage />
                     </FormItem>
-                    <div className="flex gap-x-4">
-                      <FormField
-                        control={form.control}
-                        name="CPU"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>CPU(Core)</FormLabel>
-                            <FormControl>
-                              <Input
-                                className=""
-                                placeholder="입력해주세요"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      ></FormField>
-                      <FormField
-                        control={form.control}
-                        name="RAM"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>RAM(MB)</FormLabel>
-                            <FormControl>
-                              <Input
-                                className=""
-                                placeholder="입력해주세요"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      ></FormField>
-                      <FormField
-                        control={form.control}
-                        name="Storage"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Storage(GB)</FormLabel>
-                            <FormControl>
-                              <Input
-                                className=""
-                                placeholder="입력해주세요"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      ></FormField>
-                    </div>
+          
                     <p className="flex server_sub_sub_title">서버 계정 정보</p>
                     <div className="flex gap-x-4">
                       <FormField
@@ -505,7 +427,7 @@ function Main_server({ className }: React.HTMLAttributes<HTMLDivElement>) {
                         <FormItem>
                           <FormLabel>네트워크 추가 사항</FormLabel>
                           <FormControl>
-                            <Input className="h-40" placeholder="" {...field} />
+                            <Textarea className="h-40" placeholder="" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
