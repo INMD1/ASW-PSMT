@@ -72,7 +72,7 @@ function Mainpage_index() {
                         <p className="mianpage_header">응용소프트웨어공학과 실습 지원</p>
                         <p className="mianpage_header">플랫폼에 오신걸 환영합니다.</p>
                         <div className="lg:h-10 h-5"></div>
-                        <p className="mianpage_sidheader ">프로젝트를 하는데 서버 비용이 문제라면 저희 서버를 한번 이용해보세요.</p>
+                        <p className="mianpage_sidheader ">이 플랫폼은 Dcloud동아리와 함께 합니다.</p>
                         <div className="flex lg:justify-end mt-3 lg:mt-5 ">
                             <Button className="h-10 w-20 lg:h-16 lg:w-40" onClick={() => {
                                 navigate("/site/server/subscription");
@@ -83,7 +83,7 @@ function Mainpage_index() {
                     </div>
                 </div>
                 <div className="">
-                    <div className="mobile_none ">
+                    <div className="mobile_none" style={{width: '30vw'}}>
                         <p className="title">서버 현황</p>
                         <p>서버에서 백업을 하고 있는 경우 Error가 표시가 될수 있습니다.</p>
                         <div className="lg:h-7 h-5"></div>
