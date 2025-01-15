@@ -663,8 +663,8 @@ function Judgment() {
                 <img src="./image/161593018.png" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">D Cloud Platform</span>
-                <span className="truncate text-xs">Deu Univ region</span>
+              <span className="truncate font-semibold">ASW Praitce Platform</span>
+              <span className="truncate text-xs">Deu Univ region</span>
               </div>
               <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>

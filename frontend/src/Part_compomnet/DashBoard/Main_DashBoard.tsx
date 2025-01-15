@@ -172,7 +172,7 @@ function Main_DashBoard() {
                 <img src="./image/161593018.png" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">D Cloud Platform</span>
+                <span className="truncate font-semibold">ASW Praitce Platform</span>
                 <span className="truncate text-xs">Deu Univ region</span>
               </div>
               <ChevronsUpDown className="ml-auto" />
@@ -334,7 +334,7 @@ function Main_DashBoard() {
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <p className="title"> DCP에 오신걸 환영합니다.</p>
+          <p className="title"> ASW Praitce Platform에 오신걸 환영합니다.</p>
           <p className="sub_title">
             옆 사이드에 있는 메뉴를 눌려서 서비스 이용해주세요.
           </p>

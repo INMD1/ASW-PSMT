@@ -128,6 +128,7 @@ interface userinfo {
 const FormSchema = z.object({
   Application_period: z.string(),
   Reason_for_renta: z.string(),
+  use_info: z.string().min(1, "필수 항목입니다."),
   Servername: z.string().min(1, "필수 항목입니다."),
   Username: z.string().min(1, "필수 항목입니다."),
   User_pw: z.string().min(5, "5자리 이싱 및 필수 항목입니다."),
@@ -139,20 +140,20 @@ const FormSchema = z.object({
 });
 
 const options = [
-  { value: "ubuntu24", label: "Ubuntu 24.04.1 LTS" },
-  { value: "ubuntu22", label: "Ubuntu 22.04.5 LTS" },
-  { value: "ubuntu20", label: "Ubuntu 20.04.6 LTS" },
-  { value: "ubuntu18", label: "Ubuntu 18.04.6 LTS" },
-  { value: "debian", label: "Debian 12.8.0" },
-  { value: "rocky9", label: "Rocky 9.5" },
-  { value: "rocky8", label: "Rocky 8.9" },
+  { value: "little-28942", label: "vCPU: 1,RAM: 0.5GB, Stroage: 10GB" },
+  { value: "little-71323", label: "vCPU: 1,RAM: 2GB, Stroage: 55GB" },
+  { value: "middle-13247", label: "vCPU: 2,RAM: 2GB, Stroage: 65GB" },
+  { value: "middle-97521", label: "vCPU: 2,RAM: 4GB, Stroage: 80GB" },
+  { value: "large-172314", label: "vCPU: 3,RAM: 6GB, Stroage: 100GB" },
+  { value: "large-745745", label: "vCPU: 4,RAM: 8GB, Stroage: 160GB" },
+  { value: "Custom", label: "높은 사양일 경우 네트워크 추가 사항에 따로 기재" },
 ];
 
 function Main_server({ className }: React.HTMLAttributes<HTMLDivElement>) {
   const [date, setDate] = React.useState<DateRange | undefined>({
     from: new Date(),
     to: addDays(new Date(), 366 + 20),
-  });  
+  });
   const navigate = useNavigate();
   const [userinfo] = useAtom(User_info);
   //@ts-ignore
@@ -167,6 +168,7 @@ function Main_server({ className }: React.HTMLAttributes<HTMLDivElement>) {
       Application_period: "",
       Reason_for_renta: "",
       Servername: "",
+      use_info: "",
       Username: "",
       User_pw: "",
       root_pw: "",
@@ -180,17 +182,17 @@ function Main_server({ className }: React.HTMLAttributes<HTMLDivElement>) {
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     console.log("click");
-    
+
     if (logCount == 1) {
       let json = data;
       //@ts-ignore
-      json.name =  info.name;
+      json.name = info.name;
       //@ts-ignore
-      json.email =  info.email;
+      json.email = info.email;
       //@ts-ignore
-      json.phone_number =  info.phone_number;
+      json.phone_number = info.phone_number;
       //@ts-ignore
-      json.os = selectedOption.label;
+      json.type = selectedOption.label;
       //@ts-ignore
       json.date = date;
 
@@ -271,12 +273,14 @@ function Main_server({ className }: React.HTMLAttributes<HTMLDivElement>) {
                 <div className="grid md:flex gap-x-8 grow">
                   <div className="grid">
                     <p className="flex server_sub_sub_title">사용자 정보</p>
-                    <Label htmlFor="terms">이름</Label>
-                    <Input placeholder={info.name} disabled />
-                    <Label htmlFor="terms">이메일</Label>
-                    <Input placeholder={info.email} disabled />
-                    <Label htmlFor="terms">전화번호</Label>
-                    <Input placeholder={info.phone_number} disabled />
+                    <div>
+                      <Label htmlFor="terms">이름</Label>
+                      <Input placeholder={info.name} disabled />
+                      <Label htmlFor="terms">이메일</Label>
+                      <Input placeholder={info.email} disabled />
+                      <Label htmlFor="terms">전화번호</Label>
+                      <Input placeholder={info.phone_number} disabled />
+                    </div>
                     <p className="flex server_sub_sub_title">대여 정보</p>
                     <div className={cn("grid gap-2", className)}>
                       <Popover>
@@ -349,6 +353,19 @@ function Main_server({ className }: React.HTMLAttributes<HTMLDivElement>) {
                         </FormItem>
                       )}
                     ></FormField>
+                    <FormField
+                      control={form.control}
+                      name="use_info"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>서버 이용 용도</FormLabel>
+                          <FormControl>
+                            <Input placeholder="" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    ></FormField>
                     <FormItem>
                       <FormLabel>서버 타입</FormLabel>
                       <FormControl>
@@ -363,8 +380,8 @@ function Main_server({ className }: React.HTMLAttributes<HTMLDivElement>) {
                         />
                       </FormControl>
                       <FormMessage />
+                      <Label>* 용도보다 높은 타입을 선택하면 신청 거부가 당 할수 있습니다.</Label>
                     </FormItem>
-          
                     <p className="flex server_sub_sub_title">서버 계정 정보</p>
                     <div className="flex gap-x-4">
                       <FormField
@@ -437,7 +454,7 @@ function Main_server({ className }: React.HTMLAttributes<HTMLDivElement>) {
                   <div>
                     <p className="flex server_sub_sub_title">이용 약관</p>
                     <Card
-                      className="md:w-[30vw] p-4 h-[40vh]"
+                      className="md:w-[30vw] p-4 h-[55vh]"
                       style={{ overflowX: "auto", overflowY: "auto" }}
                     >
                       <MarkdownPreview

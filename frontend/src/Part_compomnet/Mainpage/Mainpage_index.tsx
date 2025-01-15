@@ -64,14 +64,14 @@ function Mainpage_index() {
 
         <div className="p-5 md:p-20">
             <Topnav />
-            <div className="mobile_none mt-20"></div>
+            <div className="mobile_none "></div>
             <div className="xl:flex md:grid  justify-center  items-center flex-nowrap gap-20 " >
-                <div className="grid custon-with mt-10">
-                    <div className="m-5 xl:m-20">
-                        <p className="mianpage_header">동의대학교</p>
-                        <p className="mianpage_header">응용소프트웨어공학과 실습 지원</p>
+                <div className="grid custon-with">
+                    <div className="m-5 mt-0 xl:mt-20">
+                        <p className="mianpage_header">동의대학교 ICT공과대학</p>
+                        <p className="mianpage_header">응용소프트웨어공학전공 실습 지원</p>
                         <p className="mianpage_header">플랫폼에 오신걸 환영합니다.</p>
-                        <div className="lg:h-10 h-5"></div>
+                        <div className="lg:h-4 h-1"></div>
                         <p className="mianpage_sidheader ">이 플랫폼은 Dcloud동아리와 함께 합니다.</p>
                         <div className="flex lg:justify-end mt-3 lg:mt-5 ">
                             <Button className="h-10 w-20 lg:h-16 lg:w-40" onClick={() => {
@@ -83,7 +83,7 @@ function Mainpage_index() {
                     </div>
                 </div>
                 <div className="">
-                    <div className="mobile_none" style={{width: '30vw'}}>
+                    <div className="mobile_none" style={{ width: '40vw' }}>
                         <p className="title">서버 현황</p>
                         <p>서버에서 백업을 하고 있는 경우 Error가 표시가 될수 있습니다.</p>
                         <div className="lg:h-7 h-5"></div>
@@ -92,7 +92,24 @@ function Mainpage_index() {
                             <div>
                                 <Card>
                                     <CardHeader>
-                                        <CardTitle>실습 전용 서버</CardTitle>
+                                        <CardTitle>VM 서버</CardTitle>
+                                        <CardDescription>{statuses.Computer1}</CardDescription>
+
+                                    </CardHeader>
+                                </Card>
+                            </div>
+                            <div>
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>DB 서버</CardTitle>
+                                        <CardDescription>{statuses.Computer1}</CardDescription>
+                                    </CardHeader>
+                                </Card>
+                            </div>
+                            <div>
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Backup 서버</CardTitle>
                                         <CardDescription>{statuses.Computer1}</CardDescription>
                                     </CardHeader>
                                 </Card>

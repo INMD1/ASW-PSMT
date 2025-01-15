@@ -35,17 +35,17 @@ function App() {
           <Route path="/site/server/Admin/write_notice" element={<Write_notice />}></Route>
           <Route path="/site/server/View_vm/:id" element={<View_vm />}></Route>
         </Routes>
-        {/*<footer className="mobile_none">*/}
-        {/*  <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />*/}
-        {/*  <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">*/}
-        {/*    © 2024{" "}*/}
-        {/*    <a href="https://github.com/INMD1" className="hover:underline">*/}
-        {/*      INMD1*/}
-        {/*    </a>*/}
-        {/*    . All Rights Reserved.*/}
-        {/*  </span>*/}
-        {/*  <br />*/}
-        {/*</footer>*/}
+        <footer className="mobile_none">
+         <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
+         <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">
+           © 2024{" "}
+           <a href="https://github.com/INMD1" className="hover:underline">
+             INMD1 And Dcloud
+           </a>
+           . All Rights Reserved.
+         </span>
+         <br />
+        </footer>
       </BrowserRouter>
     </ThemeProvider>
   );

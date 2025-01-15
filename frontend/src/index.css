@@ -58,7 +58,7 @@ a:hover {
     display: none;
   }
   .mianpage_sidheader {
-    font-size: 0.8em;
+    font-size: 0.4em;
     font-weight: bold;
   }
   .mainpage_button {
@@ -94,14 +94,14 @@ a:hover {
     font-weight: bold;
   }
   .mianpage_header{
-    font-size: 3em;
+    font-size: 2.5em;
     font-weight: bold;
   }
   .pc_none {
     display: none;
   }
   .mianpage_sidheader {
-    font-size: 1.5em;
+    font-size: 1em;
     font-weight: bold;
   }
   .mainpage_button {

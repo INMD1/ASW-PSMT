@@ -123,13 +123,13 @@ function Topnav() {
               navigate("/site/");
             }}
           >
-            <img
+            {/* <img
               className="rounded-md lg:w-20 lg:h-20  w-10 h-10"
               src="./image/161593018.png"
               alt=""
-            />
+            /> */}
             <div className="w-3"></div>
-            <p className="title">ASW Practice VM Platform</p>
+            <p className="title">ASW Practice Platform</p>
           </div>
           {/* 로고 입력부분 */}
           <div className="flex">
@@ -230,9 +230,9 @@ function Topnav() {
                 </p>
               </Button>
             )}
-            <div className="ml-5">
+            
               <ModeToggle />
-            </div>
+            
           </div>
         </div>
       </header>
