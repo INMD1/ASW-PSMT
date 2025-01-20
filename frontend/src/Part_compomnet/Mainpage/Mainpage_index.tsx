@@ -83,7 +83,7 @@ function Mainpage_index() {
                     </div>
                 </div>
                 <div className="">
-                    <div className="mobile_none" style={{ width: '40vw' }}>
+                    <div className="mobile_none" style={{ width: '30vw' }}>
                         <p className="title">서버 현황</p>
                         <p>서버에서 백업을 하고 있는 경우 Error가 표시가 될수 있습니다.</p>
                         <div className="lg:h-7 h-5"></div>
