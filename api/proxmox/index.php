@@ -90,7 +90,9 @@ try {
 
         //VM생성하는 코드
         case 'createvm':
+            //토큰으로 권한 확인한다.
             if (Auth($_GET["token"]) == 1) {
+
                 //사전에 필요한 정보 삽입
                 $sourceVmid = $_GET["sourceVmid"] ?? null;
                 $newVmid = $_GET["newVmid"] ?? null;
@@ -143,10 +145,14 @@ try {
             } else {
                 http_response_code(500);
                 echo json_encode(['error' => "No permission"]);
-
             }
-
             break;
+            
+        //VM 서버 시작
+        case "power_on":
+            break;
+
+        //다른 상황이 입력되는 경우
         default:
             http_response_code(400);
             echo json_encode(['error' => "No valid parameter provided!"]);
