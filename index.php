@@ -1,5 +1,5 @@
 <?php
 echo "<script>
-window.location.replace('/site');
+window.location.replace('/site/');
 </script>";
 ?>
