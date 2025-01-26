@@ -37,7 +37,7 @@ import { useAtom } from "jotai";
 import { login_Count, User_info } from "@/store/strore_data";
 import { useNavigate } from "react-router-dom";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea"
+import { Textarea } from "@/components/ui/textarea";
 
 const source = `
 # 서비스 이용약관
@@ -140,12 +140,12 @@ const FormSchema = z.object({
 });
 
 const options = [
-  { value: "little-28942", label: "vCPU: 1,RAM: 0.5GB, Stroage: 10GB" },
-  { value: "little-71323", label: "vCPU: 1,RAM: 2GB, Stroage: 55GB" },
-  { value: "middle-13247", label: "vCPU: 2,RAM: 2GB, Stroage: 65GB" },
-  { value: "middle-97521", label: "vCPU: 2,RAM: 4GB, Stroage: 80GB" },
-  { value: "large-172314", label: "vCPU: 3,RAM: 6GB, Stroage: 100GB" },
-  { value: "large-745745", label: "vCPU: 4,RAM: 8GB, Stroage: 160GB" },
+  { value: "little-28942", label: "vCPU: 1,RAM: 0.5GB, Stroage: 10GB, OS: Ubuntu LTS" },
+  { value: "little-71323", label: "vCPU: 1,RAM: 2GB, Stroage: 25GB OS: Ubuntu LTS" },
+  { value: "middle-13247", label: "vCPU: 2,RAM: 2GB, Stroage: 35GB OS: Ubuntu LTS" },
+  { value: "middle-97521", label: "vCPU: 2,RAM: 4GB, Stroage: 50GB OS: Ubuntu LTS" },
+  { value: "large-172314", label: "vCPU: 3,RAM: 4GB, Stroage: 70GB OS: Ubuntu LTS" },
+  { value: "large-745745", label: "vCPU: 3,RAM: 6GB, Stroage: 90GB OS: Ubuntu LTS" },
   { value: "Custom", label: "높은 사양일 경우 네트워크 추가 사항에 따로 기재" },
 ];
 
@@ -191,6 +191,8 @@ function Main_server({ className }: React.HTMLAttributes<HTMLDivElement>) {
       json.email = info.email;
       //@ts-ignore
       json.phone_number = info.phone_number;
+      //@ts-ignore
+      json.Department = info.student_class;
       //@ts-ignore
       json.type = selectedOption.label;
       //@ts-ignore
@@ -273,13 +275,15 @@ function Main_server({ className }: React.HTMLAttributes<HTMLDivElement>) {
                 <div className="grid md:flex gap-x-8 grow">
                   <div className="grid">
                     <p className="flex server_sub_sub_title">사용자 정보</p>
-                    <div>
+                    <div className="gap-y-2">
                       <Label htmlFor="terms">이름</Label>
                       <Input placeholder={info.name} disabled />
                       <Label htmlFor="terms">이메일</Label>
                       <Input placeholder={info.email} disabled />
                       <Label htmlFor="terms">전화번호</Label>
                       <Input placeholder={info.phone_number} disabled />
+                      <Label htmlFor="terms">학과</Label>
+                      <Input placeholder={info.student_class} disabled />
                     </div>
                     <p className="flex server_sub_sub_title">대여 정보</p>
                     <div className={cn("grid gap-2", className)}>
@@ -380,7 +384,10 @@ function Main_server({ className }: React.HTMLAttributes<HTMLDivElement>) {
                         />
                       </FormControl>
                       <FormMessage />
-                      <Label>* 용도보다 높은 타입을 선택하면 신청 거부가 당 할수 있습니다.</Label>
+                      <Label>
+                        * 용도보다 높은 타입을 선택하면 신청 거부가 당 할수
+                        있습니다.
+                      </Label>
                     </FormItem>
                     <p className="flex server_sub_sub_title">서버 계정 정보</p>
                     <div className="flex gap-x-4">
@@ -444,7 +451,11 @@ function Main_server({ className }: React.HTMLAttributes<HTMLDivElement>) {
                         <FormItem>
                           <FormLabel>네트워크 추가 사항</FormLabel>
                           <FormControl>
-                            <Textarea className="h-40" placeholder="" {...field} />
+                            <Textarea
+                              className="h-40"
+                              placeholder=""
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -454,7 +465,7 @@ function Main_server({ className }: React.HTMLAttributes<HTMLDivElement>) {
                   <div>
                     <p className="flex server_sub_sub_title">이용 약관</p>
                     <Card
-                      className="md:w-[30vw] p-4 h-[45vh]"
+                      className="md:w-[30vw] p-4 h-[40vh]"
                       style={{ overflowX: "auto", overflowY: "auto" }}
                     >
                       <MarkdownPreview
