@@ -140,11 +140,26 @@ const FormSchema = z.object({
 });
 
 const options = [
-  { value: "little-71323", label: "vCPU: 1,RAM: 2GB, Stroage: 25GB OS: Ubuntu LTS" },
-  { value: "middle-13247", label: "vCPU: 2,RAM: 2GB, Stroage: 35GB OS: Ubuntu LTS" },
-  { value: "middle-97521", label: "vCPU: 2,RAM: 4GB, Stroage: 60GB OS: Ubuntu LTS" },
-  { value: "large-172314", label: "vCPU: 3,RAM: 4GB, Stroage: 80GB OS: Ubuntu LTS" },
-  { value: "large-745745", label: "vCPU: 3,RAM: 6GB, Stroage: 100GB OS: Ubuntu LTS" },
+  {
+    value: "little-71323",
+    label: "vCPU: 1,RAM: 2GB, Stroage: 25GB OS: Ubuntu LTS",
+  },
+  {
+    value: "middle-13247",
+    label: "vCPU: 2,RAM: 2GB, Stroage: 35GB OS: Ubuntu LTS",
+  },
+  {
+    value: "middle-97521",
+    label: "vCPU: 2,RAM: 4GB, Stroage: 60GB OS: Ubuntu LTS",
+  },
+  {
+    value: "large-172314",
+    label: "vCPU: 3,RAM: 4GB, Stroage: 80GB OS: Ubuntu LTS",
+  },
+  {
+    value: "large-745745",
+    label: "vCPU: 3,RAM: 6GB, Stroage: 100GB OS: Ubuntu LTS",
+  },
   { value: "Custom", label: "높은 사양일 경우 네트워크 추가 사항에 따로 기재" },
 ];
 
@@ -193,7 +208,7 @@ function Main_server({ className }: React.HTMLAttributes<HTMLDivElement>) {
       //@ts-ignore
       json.Department = info.student_class;
       //@ts-ignore
-      json.type = selectedOption.label;
+      json.server = selectedOption;
       //@ts-ignore
       json.date = date;
 
