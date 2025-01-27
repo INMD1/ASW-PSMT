@@ -23,7 +23,7 @@ $configure = [
 ];
 
 //파라미터 사전 설정
-$parameter = $_GET["search"] ?? null;
+$parameter = $_GET["mode"] ?? null;
 
 //VM을 조회시 어떤 VM을 조회할지 가져오기 
 $Search_VM = $_GET["vmid"] ?? null;
@@ -31,6 +31,7 @@ $Search_VM = $_GET["vmid"] ?? null;
 //실시간 데이터조회를 위한
 $node = $_GET["node"] ?? null;
 $type = $_GET["type"] ?? null;
+
 
 //내부에서 Department에서 토큰의 정보를 해석하게 한다. (필요 데이터 토큰)
 function Auth($token)
@@ -61,11 +62,12 @@ function Auth($token)
         $data = json_decode($response, true);
 
         // Admin 값 추출
-        if (isset($data['Admin'])) {
-            echo $data['Admin'];
+        if (isset($data['Admin']) == 1) {
+            return "true";
+        } else {
+            return "false";
         }
     }
-
     // cURL 종료
     curl_close($ch);
 }
@@ -84,26 +86,25 @@ try {
         case 'livedata':
             $ID = $_GET["id"] ?? null;
             //{node}/qemu/{vmid}/status/current
-            $nodes = Request::Request('/nodes/' . $node . '/' . $type . '/' . $ID . '/status/current', null, 'GET');
+            $nodes = Request::Request('/nodes/computer6/qemu/' . $ID . '/status/current', null, 'GET');
             echo json_encode($nodes);
             break;
 
         //VM생성하는 코드
         case 'createvm':
             //토큰으로 권한 확인한다.
-            if (Auth($_GET["token"]) == 1) {
-
+            $asdads = Auth($_GET["token"]);
+            if ($asdads == "true") {
                 //사전에 필요한 정보 삽입
                 $sourceVmid = $_GET["sourceVmid"] ?? null;
                 $newVmid = $_GET["newVmid"] ?? null;
                 $newVmName = $_GET["newVmName"] ?? null;
-                $targetNode = $_GET["targetNode"] ?? null;
                 $ciUser = $_GET["ciUser"] ?? null;
                 $ciPassword = $_GET["ciPassword"] ?? null;
-                $ipConfig = $_GET["ipConfig"] ?? null;  //예시: "ip=192.168.1.100/24,gw=192.168.1.1" 적어서 제출한다.
+                $ipAddress = $_GET["ipAddress"] ?? null;
 
-                // 7개 정보중 하나라도 없으면 오류 반환
-                if (!$sourceVmid || !$newVmid || !$newVmName || !$targetNode || !$ciUser || !$ciPassword || !$ipConfig) {
+                // 3개 정보중 하나라도 없으면 오류 반환
+                if (!$sourceVmid || !$newVmid || !$newVmName || !$ciUser || !$ciPassword || !$ipAddress) {
                     http_response_code(400);
                     echo json_encode(['error' => "Missing required parameters for VM creation"]);
                     break;
@@ -114,42 +115,74 @@ try {
                     'newid' => $newVmid,
                     'name' => $newVmName,
                     'full' => 1,
-                    'target' => $targetNode,
+                    'target' => 'computer6',
                     'storage' => 'Template', //다른 저장소로 변경이 가능하다.
                 ];
 
                 // 클론하기
-                $result = Request::Request("/nodes/{$targetNode}/qemu/{$sourceVmid}/clone", $cloneParams, 'POST');
+                $result = Request::Request("/nodes/computer6/qemu/{$sourceVmid}/clone", $cloneParams, 'POST');
+                $array = get_object_vars($result);
+                if ($array["data"] != null) {
+                    while (true) {
+                        $counting = Request::Request('/nodes/computer6/qemu/' . $newVmid . '/status/current', null, 'GET');
+                        $array = get_object_vars($counting);
+                        if ($array["data"] != null) {
 
-                if (isset($result['data'])) {
-                    // VM 클론 성공 후 cloud-init 설정
-                    $cloudInitParams = [
-                        'ciuser' => $ciUser,
-                        'cipassword' => $ciPassword,
-                        'ipconfig0' => $ipConfig,
-                    ];
+                            // ipconfig0 파라미터 생성
+                            $ipConfig = "ip={$ipAddress}/16,gw=172.10.1.1";
 
-                    $cloudInitResult = Request::Request("/nodes/{$targetNode}/qemu/{$newVmid}/config", $cloudInitParams, 'POST');
+                            $cloudInitParams = [
+                                'ciuser' => $ciUser,
+                                'cipassword' => $ciPassword,
+                                'ipconfig0' => $ipConfig,
+                            ];
 
-                    if (isset($cloudInitResult['data'])) {
-                        http_response_code(200);
-                        echo json_encode(['success' => "VM successfully cloned and cloud-init configured", 'data' => $cloudInitResult['data']]);
-                    } else {
-                        http_response_code(500);
-                        echo json_encode(['error' => "Failed to configure cloud-init", 'data' => $cloudInitResult]);
+                            // Proxmox API 요청
+                            $cloudInitResult = Request::Request("/nodes/computer6/qemu/{$newVmid}/config", $cloudInitParams, 'POST');
+
+                            if (isset($cloudInitResult->data)) {
+                                http_response_code(201);
+                                echo json_encode(['Success' => "Create Vm and Cloud-init configuration applied successfully"]);
+                            } else {
+                                http_response_code(500);
+                                echo json_encode([
+                                    'Error' => "Failed to apply Cloud-init configuration",
+                                    'details' => json_encode($cloudInitResult)
+                                ]);
+                            }
+                            break;
+                        }
+                        sleep(3);
                     }
                 } else {
                     http_response_code(500);
-                    echo json_encode(['error' => "Failed to clone VM", 'data' => $result]);
+                    echo json_encode(['Error' => "Fail creative VM"]);
                 }
+
             } else {
-                http_response_code(500);
+                http_response_code(400);
                 echo json_encode(['error' => "No permission"]);
             }
             break;
-            
+
         //VM 서버 시작
         case "power_on":
+            //토큰으로 권한 확인한다.
+            $vmid = $_GET["vmid"] ?? null;
+
+            $startResult = Request::Request("/nodes/computer6/qemu/{$vmid}/status/start", null, 'POST');
+            $array = get_object_vars($startResult);
+            if ($array["data"] != null) {
+                http_response_code(200);
+                echo json_encode(['success' => "VM cloned, configured, and started successfully", 'vmid' => $vmid]);
+            } else {
+                http_response_code(500);
+                echo json_encode(['error' => "Failed to start VM", 'details' => $startResult]);
+            }
+            break;
+
+        case "test":
+            Auth($_GET["token"]);
             break;
 
         //다른 상황이 입력되는 경우
