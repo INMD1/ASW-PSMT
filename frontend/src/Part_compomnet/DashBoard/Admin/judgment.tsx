@@ -126,18 +126,16 @@ function Row({ row }) {
     // 먼저 데이터베이스에 저장
     const response = await fetch(
       //@ts-ignore
-      `/api/server_application?type=admin&email=${userinfo.email}&id=${row.id}&Appcet=${result.isApproved}`,
+      `/api/proxmox/?mode=createvm&token=${Accessjwt.Access}&newVmid==${vmId}&newVmName==${DataParse.Servername}&sourceVmid==${DataParse.server.createid}&ciUser==${DataParse.Username}&ciPassword==${DataParse.User_pw}&ipAddress=${vmip}`,
       {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(result.content),
+        method: "GET",
       }
     );
-    if (response.status === 200) {
-       // 저장하는데 성공하면 VM을 자동으로 생성함
+    if (response.status === 201) {
+      // 저장하는데 성공하면 VM을 자동으로 생성함
       const createVM = await fetch(
         //@ts-ignore
-        `/api/proxmox/?mode=createvm&token=${Accessjwt}&newVmid==${vmId}&newVmName==${DataParse.Servername}&sourceVmid==${DataParse.server.createid}&ciUser==${DataParse.Username}&ciPassword==${DataParse.User_pw}&ipAddress=${vmip}`,
+        `/api/server_application?type=admin&email=${userinfo.email}&id=${row.id}&Appcet=${result.isApproved}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -146,7 +144,7 @@ function Row({ row }) {
       );
 
       // 생성하면 아래 코드를 실행해 알림을 보내준다.
-      if (createVM.status === 201) {
+      if (createVM.status === 200) {
         toast.success("VM이 생성되었습니다..", {
           position: "bottom-right",
           autoClose: 3000,
