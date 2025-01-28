@@ -126,7 +126,7 @@ function Row({ row }) {
     // 먼저 데이터베이스에 저장
     const response = await fetch(
       //@ts-ignore
-      `/api/proxmox/?mode=createvm&token=${Accessjwt.Access}&newVmid==${vmId}&newVmName==${DataParse.Servername}&sourceVmid==${DataParse.server.createid}&ciUser==${DataParse.Username}&ciPassword==${DataParse.User_pw}&ipAddress=${vmip}`,
+      `/api/proxmox/?mode=createvm&token=${Accessjwt.Access}&newVmid=${vmId}&newVmName=${DataParse.Servername}&sourceVmid=${DataParse.server.createid}&ciUser=${DataParse.Username}&ciPassword=${DataParse.User_pw}&ipAddress=${vmip}`,
       {
         method: "GET",
       }
