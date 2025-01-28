@@ -44,7 +44,7 @@ function Proxmox_vm_status({ VMID }: { VMID: string }): JSX.Element {
     if (!vminfo.region || !vminfo.servertype || !vminfo.vmId) return;
     try {
       const response = await fetch(
-        `/api/proxmox/?search=livedata&node=computer6&type=${vminfo.servertype}&id=${vminfo.vmId}`
+        `/api/proxmox/?search=livedata&node=computer6&type=qemu&id=${vminfo.vmId}`
       );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
