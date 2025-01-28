@@ -235,7 +235,7 @@ if ($request_method == 'GET') {
                                                 <h2 style=\"color: #2c3e50;\">안녕하세요,</h2>
                                                 
                                                 <p>저희가 요청하신 서버 제작을 성공적으로 완료하였음을 알려드립니다.</p>
-                                                
+                                                <p>기본적인 연결 IP나 포트는 보유서버 > 프로젝트 이름을 눌려서 보시기 바람니다.</p>
                                                 <h3 style=\"color: #3498db;\">승인 세부사항</h3>
                                                 <ul style=\"list-style-type: none; padding-left: 0;\">
                                                     <li><strong>프로젝트명:</strong> {$servername}</li>
@@ -244,7 +244,7 @@ if ($request_method == 'GET') {
                                                 
                                                 <h3 style=\"color: #3498db;\">서버 배치 정보</h3>
                                                 <ul style=\"list-style-type: none; padding-left: 0;\">
-                                                    <li><strong>배치 서버:</strong> {$region}</li>
+                                                    <li><strong>배치 서버:</strong> Computer6</li>
                                                     <li><strong>VM ID:</strong> {$vmId}, Type: {$servertype}</li>
                                                 </ul>
                                                 <h5 style=\"color: #3498db;\">네트워크 안내사항</h5>
@@ -275,7 +275,7 @@ if ($request_method == 'GET') {
                                         <html>
                                         <head>
                                             <meta charset=\"UTF-8\">
-                                            <title>서버 제작 승인 안내</title>
+                                            <title>서버 제작 거부부 안내</title>
                                         </head>
                                         <body style=\"font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;\">
                                             <div style=\"background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 5px; padding: 20px;\">
