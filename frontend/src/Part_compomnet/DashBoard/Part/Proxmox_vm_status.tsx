@@ -20,6 +20,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Cpu, HardDrive, Network } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { toast, ToastContainer } from "react-toastify";
 
 function Proxmox_vm_status({ VMID }: { VMID: string }): JSX.Element {
   const [userinfo] = useAtom(User_info);
@@ -67,6 +69,46 @@ function Proxmox_vm_status({ VMID }: { VMID: string }): JSX.Element {
     }
   };
 
+  async function StartVM() {
+    try {
+      const response = await fetch(
+        //@ts-ignore
+        `/api/proxmox/?mode=power_on&vmid=${VMID}`
+      );
+      if (response.status === 200) {
+        toast.success("서버가 시작 되었습니다. 새로고침을 해주세요.", {
+          position: "bottom-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "colored",
+        });
+      } else {
+        toast.error("서버를 시작 하지 못했습니다.", {
+          position: "bottom-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "colored",
+        });
+      }
+    } catch (error) {
+      toast.error("오류가 발생했습니다. 관리자에게 문의해주세요.", {
+        position: "bottom-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "colored",
+      });
+    }
+  }
+
   useEffect(() => {
     Getinfo();
   }, [userinfo, VMID]);
@@ -86,13 +128,23 @@ function Proxmox_vm_status({ VMID }: { VMID: string }): JSX.Element {
       </h2>
 
       {/* Status and Summary */}
-      <p className="title">서버 정보</p>
+      <div className="flex justify-between">
+        <p className="title">서버 정보</p>
+        <Button
+          className=""
+          onClick={() => {
+            StartVM();
+          }}
+        >
+          서버 시작하기
+        </Button>
+      </div>
       <br />
       <div className="gird md:flex gap-5">
         <div className=" mb-8 md:mb-0 ">
           <Card className="p-4">
             <div className="gird md:flex ">
-              <div className=" min-w-[25vw]">
+              <div className=" min-w-[20vw]">
                 <p>서버 정보</p>
                 <Table>
                   <TableHeader>
@@ -113,23 +165,31 @@ function Proxmox_vm_status({ VMID }: { VMID: string }): JSX.Element {
                       <TableCell className="text-left">computer6</TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell className="text-left">|</TableCell>
                       <TableCell className="font-medium">서버 이름</TableCell>
                       <TableCell className="text-left">
                         {vminfo.Servername}
                       </TableCell>
+                      <TableCell className="text-left">|</TableCell>
+                      <TableCell className="font-medium">서버 타입</TableCell>
+                      <TableCell className="text-left"></TableCell>
                     </TableRow>
                     <TableRow>
+                      <TableCell className="font-medium">유저 이름</TableCell>
+                      <TableCell className="text-left">
+                        {vminfo.Username}
+                      </TableCell>
+                      <TableCell className="text-left">|</TableCell>
                       <TableCell className="font-medium">유저 PW</TableCell>
                       <TableCell className="text-left">
                         {vminfo.User_pw}
                       </TableCell>
                     </TableRow>
+                    <hr />
                   </TableBody>
                 </Table>
               </div>
               <div className="min-w-[20vw] p-5">
-                <p>[네트워크 설정 안내]</p>
+                <p>[네트워크 추가 설정 안내]</p>
                 <div className="p-3">
                   {vminfo.NetworkInfo == ""
                     ? "전달된 값이 없습니다."
@@ -139,62 +199,93 @@ function Proxmox_vm_status({ VMID }: { VMID: string }): JSX.Element {
             </div>
           </Card>
         </div>
-        <div className="grid grid-cols-1 w-full md:grid-cols-2 lg:grid-cols-2 gap-6 mb-8">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">CPU Usage</CardTitle>
-              <Cpu className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{data.cpu?.toFixed(2)}%</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Memory Usage
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {((data.mem || 0) / 1024 / 1024).toFixed(2)} MB
+        <div>
+          <div className=" mb-8 md:mb-0 ">
+            <Card className="p-4">
+              <div className="grid">
+                <p>서버 정보</p>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="">Invoice</TableHead>
+                      <TableHead className="text-center">값</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell className="font-medium">외부 IP</TableCell>
+                      <TableCell className="text-left">
+                        113.198.229.158
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-medium">내부 IP</TableCell>
+                      <TableCell className="text-left">{vminfo.vmip}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-medium">SSH 포트</TableCell>
+                      <TableCell className="text-left">Test Port</TableCell>
+                    </TableRow>
+                    <hr />
+                  </TableBody>
+                </Table>
               </div>
-              <p className="text-xs text-muted-foreground">
-                Total: {((data.maxmem || 0) / 1024 / 1024).toFixed(2)} MB
-              </p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Disk Usage</CardTitle>
-              <HardDrive className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {((data.disk || 0) / 1024 / 1024).toFixed(2)} MB
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Max: {((data.maxdisk || 0) / 1024 / 1024).toFixed(2)} MB
-              </p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Network I/O</CardTitle>
-              <Network className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {((data.netin || 0) / 1024 / 1024).toFixed(2)} MB/s
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Out: {((data.netout || 0) / 1024 / 1024).toFixed(2)} MB/s
-              </p>
-            </CardContent>
-          </Card>
+            </Card>
+          </div>
         </div>
       </div>
-
+      <div className="grid grid-cols-1 w-full pt-10  md:flex lg:grid-cols-2 gap-6 mb-8">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">CPU Usage</CardTitle>
+            <Cpu className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{data.cpu?.toFixed(2)}%</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Memory Usage</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {((data.mem || 0) / 1024 / 1024).toFixed(2)} MB
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Total: {((data.maxmem || 0) / 1024 / 1024).toFixed(2)} MB
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Disk Usage</CardTitle>
+            <HardDrive className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {((data.disk || 0) / 1024 / 1024).toFixed(2)} MB
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Max: {((data.maxdisk || 0) / 1024 / 1024).toFixed(2)} MB
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Network I/O</CardTitle>
+            <Network className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {((data.netin || 0) / 1024 / 1024).toFixed(2)} MB/s
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Out: {((data.netout || 0) / 1024 / 1024).toFixed(2)} MB/s
+            </p>
+          </CardContent>
+        </Card>
+      </div>
       {/* Performance Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
@@ -240,6 +331,7 @@ function Proxmox_vm_status({ VMID }: { VMID: string }): JSX.Element {
           </CardContent>
         </Card>
       </div>
+      <ToastContainer />
     </div>
   );
 }
