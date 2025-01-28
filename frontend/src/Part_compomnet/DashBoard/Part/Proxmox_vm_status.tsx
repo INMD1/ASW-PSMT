@@ -33,7 +33,7 @@ function Proxmox_vm_status({ VMID }: { VMID: string }): JSX.Element {
     try {
       const response = await fetch(
         //@ts-ignore
-        `/api/server_application?type=personal&username=${userinfo.name}&id=${VMID}`
+        `/api/server_application?type=personal&username=${userinfo.name}&id=${vminfo.vmId}`
       );
       const restApi = await response.json();
       setVminfo(JSON.parse(restApi[0].content));
@@ -119,7 +119,7 @@ function Proxmox_vm_status({ VMID }: { VMID: string }): JSX.Element {
       const interval = setInterval(fetchData, 5000);
       return () => clearInterval(interval);
     }
-  }, [vminfo]);
+  }, []);
 
   return (
     <div className="p-8">
