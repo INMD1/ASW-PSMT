@@ -79,10 +79,6 @@ function Proxmox_vm_status({ VMID }: { VMID: string }): JSX.Element {
     }
   }, [vminfo]);
 
-  if (!data || Object.keys(data).length === 0) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <div className="p-8">
       <h2 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">
@@ -91,7 +87,7 @@ function Proxmox_vm_status({ VMID }: { VMID: string }): JSX.Element {
 
       {/* Status and Summary */}
       <p className="title">서버 정보</p>
-      <br/>
+      <br />
       <div className="gird md:flex gap-5">
         <div className=" mb-8 md:mb-0 ">
           <Card className="p-4">
@@ -110,17 +106,13 @@ function Proxmox_vm_status({ VMID }: { VMID: string }): JSX.Element {
                   </TableHeader>
                   <TableBody>
                     <TableRow>
-                      <TableCell className="font-medium">OS</TableCell>
-                      <TableCell className="text-left">{vminfo.os}</TableCell>
-                      <TableCell className="text-left">|</TableCell>
                       <TableCell className="font-medium">생성자</TableCell>
                       <TableCell className="text-left">{vminfo.name}</TableCell>
+                      <TableCell className="text-left">|</TableCell>
+                      <TableCell className="font-medium">리전</TableCell>
+                      <TableCell className="text-left">computer6</TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium">리전</TableCell>
-                      <TableCell className="text-left">
-                        {vminfo.region}
-                      </TableCell>
                       <TableCell className="text-left">|</TableCell>
                       <TableCell className="font-medium">서버 이름</TableCell>
                       <TableCell className="text-left">
@@ -128,33 +120,21 @@ function Proxmox_vm_status({ VMID }: { VMID: string }): JSX.Element {
                       </TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium">유저 ID</TableCell>
-                      <TableCell className="text-left">
-                        {vminfo.Username}
-                      </TableCell>
-                      <TableCell className="text-left">|</TableCell>
-                      <TableCell className="font-medium">Root ID</TableCell>
-                      <TableCell className="text-left">Root</TableCell>
-                    </TableRow>
-                    <TableRow>
                       <TableCell className="font-medium">유저 PW</TableCell>
                       <TableCell className="text-left">
                         {vminfo.User_pw}
-                      </TableCell>
-                      <TableCell className="text-left">|</TableCell>
-                      <TableCell className="font-medium">Root PW</TableCell>
-                      <TableCell className="text-left">
-                        {vminfo.root_pw}
                       </TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
               </div>
               <div className="min-w-[20vw] p-5">
-              <p>[네트워크 설정 안내]</p>
-              <div className="p-3">
-              {vminfo.NetworkInfo == "" ? "전달된 값이 없습니다." : vminfo.NetworkInfo}
-              </div>
+                <p>[네트워크 설정 안내]</p>
+                <div className="p-3">
+                  {vminfo.NetworkInfo == ""
+                    ? "전달된 값이 없습니다."
+                    : vminfo.NetworkInfo}
+                </div>
               </div>
             </div>
           </Card>
