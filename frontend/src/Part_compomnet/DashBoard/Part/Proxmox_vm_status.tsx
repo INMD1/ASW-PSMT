@@ -72,7 +72,7 @@ function Proxmox_vm_status({ VMID }: { VMID: string }): JSX.Element {
     try {
       const response = await fetch(
         //@ts-ignore
-        `/api/proxmox/?mode=power_on&vmid=${VMID}`
+        `/api/proxmox/?mode=power_on&vmid=${vminfo.vmId}`
       );
       if (response.status === 200) {
         toast.success("서버가 시작 되었습니다. 새로고침을 해주세요.", {
