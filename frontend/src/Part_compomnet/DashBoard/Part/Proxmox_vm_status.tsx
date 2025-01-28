@@ -113,9 +113,11 @@ function Proxmox_vm_status({ VMID }: { VMID: string }): JSX.Element {
   }, [userinfo, VMID]);
 
   useEffect(() => {
-    fetchData();
-    const interval = setInterval(fetchData, 5000);
-    return () => clearInterval(interval);
+    if (vminfo.vmId) {
+      fetchData();
+      const interval = setInterval(fetchData, 5000);
+      return () => clearInterval(interval);
+    }
   }, [vminfo]);
 
   return (
