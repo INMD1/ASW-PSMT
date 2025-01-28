@@ -273,7 +273,7 @@ function Auth() {
                                                     <FormItem>
                                                         <FormLabel>이름</FormLabel>
                                                         <FormControl>
-                                                            <Input placeholder="shadcn" {...field} />
+                                                            <Input placeholder="name" {...field} />
                                                         </FormControl>
                                                         <FormMessage />
                                                     </FormItem>
@@ -312,7 +312,7 @@ function Auth() {
                                                     <FormItem>
                                                         <FormLabel>학과</FormLabel>
                                                         <FormControl>
-                                                            <Input placeholder="shadcn" {...field} />
+                                                            <Input placeholder="department" {...field} />
                                                         </FormControl>
                                                         <FormMessage />
                                                     </FormItem>

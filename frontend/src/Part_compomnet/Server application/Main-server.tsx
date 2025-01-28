@@ -132,7 +132,6 @@ const FormSchema = z.object({
   Servername: z.string().min(1, "필수 항목입니다."),
   Username: z.string().min(1, "필수 항목입니다."),
   User_pw: z.string().min(5, "5자리 이싱 및 필수 항목입니다."),
-  root_pw: z.string().min(5, "5자리 이싱 및 필수 항목입니다."),
   Network_Requirements: z.string(),
   iamcheck: z.boolean().refine((val) => val === true, {
     message: "서비스 이용 약관에 동의해야 합니다.",
@@ -143,22 +142,27 @@ const options = [
   {
     value: "little-71323",
     label: "vCPU: 1,RAM: 2GB, Stroage: 25GB OS: Ubuntu LTS",
+    createid: 8000,
   },
   {
     value: "middle-13247",
     label: "vCPU: 2,RAM: 2GB, Stroage: 35GB OS: Ubuntu LTS",
+    createid: 8001,
   },
   {
     value: "middle-97521",
     label: "vCPU: 2,RAM: 4GB, Stroage: 60GB OS: Ubuntu LTS",
+    createid: 8002,
   },
   {
     value: "large-172314",
     label: "vCPU: 3,RAM: 4GB, Stroage: 80GB OS: Ubuntu LTS",
+    createid: 8003,
   },
   {
     value: "large-745745",
     label: "vCPU: 3,RAM: 6GB, Stroage: 100GB OS: Ubuntu LTS",
+    createid: 8004,
   },
   { value: "Custom", label: "높은 사양일 경우 네트워크 추가 사항에 따로 기재" },
 ];
@@ -185,7 +189,6 @@ function Main_server({ className }: React.HTMLAttributes<HTMLDivElement>) {
       use_info: "",
       Username: "",
       User_pw: "",
-      root_pw: "",
       Network_Requirements: "",
       //@ts-ignore
       iamcheck: false,
@@ -399,7 +402,7 @@ function Main_server({ className }: React.HTMLAttributes<HTMLDivElement>) {
                       </FormControl>
                       <FormMessage />
                       <Label>
-                        * 용도보다 높은 타입을 선택하면 신청 거부가 당 할수
+                        * 용도보다 높은 타입을 선택하면 신청 거부가 당 할 수
                         있습니다.
                       </Label>
                     </FormItem>
@@ -428,23 +431,6 @@ function Main_server({ className }: React.HTMLAttributes<HTMLDivElement>) {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>일반 계정 비밀번호</FormLabel>
-                            <FormControl>
-                              <Input
-                                className=""
-                                placeholder="입력해주세요"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      ></FormField>
-                      <FormField
-                        control={form.control}
-                        name="root_pw"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>루트 계정 비빌번호</FormLabel>
                             <FormControl>
                               <Input
                                 className=""

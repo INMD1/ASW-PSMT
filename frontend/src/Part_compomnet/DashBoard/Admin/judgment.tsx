@@ -39,7 +39,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { useAtom } from "jotai";
-import { ToastContainer, toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { Access_jwt, login_Count, User_info } from "@/store/strore_data";
 import * as React from "react";
 import Table from "@mui/material/Table";
@@ -57,13 +57,6 @@ import Box from "@mui/material/Box";
 import { Card } from "@/components/ui/card.tsx";
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input.tsx";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { Textarea } from "@/components/ui/textarea.tsx";
 import { useNavigate } from "react-router-dom";
@@ -78,20 +71,19 @@ import {
 function Row({ row }) {
   const navigate = useNavigate();
   const DataParse = JSON.parse(row.content);
-  const [selectedRegion, setSelectedRegion] = useState("");
-  const [servertype, setServertype] = useState("");
-  const [serverName, setServerName] = useState(
-    DataParse.Servername === undefined ? "" : DataParse.Servername
-  );
   const [vmId, setVmId] = useState(
     DataParse.vmId === undefined ? "" : DataParse.vmId
   );
   const [isApproved, setIsApproved] = useState("");
   const [rejectionReason, setRejectionReason] = useState("");
+  const [vmip, setVmip] = useState("");
   const [NetworkInfo, setNetworkInfo] = useState("");
   const [open, setOpen] = React.useState(false);
   //@ts-ignore
   const [userinfo] = useAtom(User_info);
+  const [Accessjwt] = useAtom(Access_jwt);
+  console.log(Accessjwt);
+
   const handleSubmit = async () => {
     const result_content = JSON.parse(row.content);
     let result = {
@@ -102,12 +94,10 @@ function Row({ row }) {
     if (isApproved == "true") {
       try {
         delete result_content.rejectionReason;
-        result_content.Servername = serverName;
       } finally {
-        result_content.region = selectedRegion;
         result_content.vmId = vmId;
+        result_content.vmip = vmip;
         result_content.NetworkInfo = NetworkInfo;
-        result_content.servertype = servertype;
         result = {
           content: result_content,
           isApproved: 381,
@@ -133,8 +123,7 @@ function Row({ row }) {
     }
 
     // 여기서 결과를 저장하는 로직을 구현합니다.
-    // 예: API 호출 또는 로컬 스토리지에 저장
-
+    // 먼저 데이터베이스에 저장
     const response = await fetch(
       //@ts-ignore
       `/api/server_application?type=admin&email=${userinfo.email}&id=${row.id}&Appcet=${result.isApproved}`,
@@ -145,19 +134,45 @@ function Row({ row }) {
       }
     );
     if (response.status === 200) {
-      toast.success("저장되었습니다.", {
-        position: "bottom-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "colored",
-      });
-      setTimeout(() => {
-        navigate("/site/server/Admin/judgment");
-      }, 2000);
-      console.log("success");
+       // 저장하는데 성공하면 VM을 자동으로 생성함
+      const createVM = await fetch(
+        //@ts-ignore
+        `/api/proxmox/?mode=createvm&token=${Accessjwt}&newVmid==${vmId}&newVmName==${DataParse.Servername}&sourceVmid==${DataParse.server.createid}&ciUser==${DataParse.Username}&ciPassword==${DataParse.User_pw}&ipAddress=${vmip}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(result.content),
+        }
+      );
+
+      // 생성하면 아래 코드를 실행해 알림을 보내준다.
+      if (createVM.status === 201) {
+        toast.success("VM이 생성되었습니다..", {
+          position: "bottom-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "colored",
+        });
+
+        //다시 원래 사이트로 넘어감
+        setTimeout(() => {
+          navigate("/site/server/Admin/judgment");
+        }, 2000);
+        console.log("success");
+      } else {
+        toast.error("VM 생성중에 오류가 발생 했습니다.", {
+          position: "bottom-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "colored",
+        });
+      }
     }
   };
 
@@ -258,26 +273,12 @@ function Row({ row }) {
                               신청 서버 정보
                             </AccordionTrigger>
                             <AccordionContent>
+                              <p className="pb-3 dark:text-[#cccccc]">
+                                Cloud-Init 삽입 정보
+                              </p>
                               <Card>
                                 <Table>
                                   <TableBody>
-                                    <TableRow>
-                                      <TableCell className="font-medium dark:text-[#cccccc]">
-                                        OS
-                                      </TableCell>
-                                      <TableCell className="text-left dark:text-[#cccccc]">
-                                        {DataParse.os}
-                                      </TableCell>
-                                      <TableCell className="text-center dark:text-[#cccccc]">
-                                        |
-                                      </TableCell>
-                                      <TableCell className="font-medium dark:text-[#cccccc]">
-                                        생성자
-                                      </TableCell>
-                                      <TableCell className="text-left dark:text-[#cccccc]">
-                                        {DataParse.name}
-                                      </TableCell>
-                                    </TableRow>
                                     <TableRow>
                                       <TableCell className="font-medium dark:text-[#cccccc]">
                                         서버 이름
@@ -289,45 +290,54 @@ function Row({ row }) {
                                         |
                                       </TableCell>
                                       <TableCell className="font-medium dark:text-[#cccccc]">
+                                        할당된 IP
+                                      </TableCell>
+                                      <TableCell className="font-medium dark:text-[#cccccc]">
+                                        {DataParse.vmip == undefined
+                                          ? "아직 설명 못함"
+                                          : DataParse.vmi}
+                                      </TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                      <TableCell className="font-medium dark:text-[#cccccc]">
                                         유저 ID
                                       </TableCell>
                                       <TableCell className="text-left dark:text-[#cccccc]">
                                         {DataParse.Username}
                                       </TableCell>
-                                    </TableRow>
-                                    <TableRow>
+                                      <TableCell className="text-center dark:text-[#cccccc]">
+                                        |
+                                      </TableCell>
                                       <TableCell className="font-medium dark:text-[#cccccc]">
                                         유저 PW
                                       </TableCell>
                                       <TableCell className="text-left dark:text-[#cccccc]">
                                         {DataParse.User_pw}
                                       </TableCell>
-                                      <TableCell className="text-center dark:text-[#cccccc]">
-                                        |
-                                      </TableCell>
+                                    </TableRow>
+                                  </TableBody>
+                                </Table>
+                              </Card>
+                              <p className="pb-3 pt-3 dark:text-[#cccccc]">
+                                서버 타입
+                              </p>
+                              <Card>
+                                <Table>
+                                  <TableBody>
+                                    <TableRow>
                                       <TableCell className="font-medium dark:text-[#cccccc]">
-                                        Root PW
+                                        서버 타입 ID
                                       </TableCell>
                                       <TableCell className="text-left dark:text-[#cccccc]">
-                                        {DataParse.root_pw}
+                                        {DataParse.server.value}
                                       </TableCell>
                                     </TableRow>
                                     <TableRow>
                                       <TableCell className="font-medium dark:text-[#cccccc]">
-                                        CPU / RAM
+                                        서버 타입 세부 정보
                                       </TableCell>
                                       <TableCell className="text-left dark:text-[#cccccc]">
-                                        {DataParse.CPU} (C) / {DataParse.RAM}
-                                        (MB)
-                                      </TableCell>
-                                      <TableCell className="text-center dark:text-[#cccccc]">
-                                        |
-                                      </TableCell>
-                                      <TableCell className="font-medium dark:text-[#cccccc]">
-                                        Storgae
-                                      </TableCell>
-                                      <TableCell className="text-left dark:text-[#cccccc]">
-                                        {DataParse.Storage} (GB)
+                                        {DataParse.server.label}
                                       </TableCell>
                                     </TableRow>
                                   </TableBody>
@@ -356,7 +366,7 @@ function Row({ row }) {
                                       <TableCell className="font-medium dark:text-[#cccccc]">
                                         대여 종료
                                       </TableCell>
-                                      <TableCell className="text-left dark:text-[#cccccc]" >
+                                      <TableCell className="text-left dark:text-[#cccccc]">
                                         {DateReplace(DataParse.date.to)}
                                       </TableCell>
                                     </TableRow>
@@ -364,7 +374,9 @@ function Row({ row }) {
                                 </Table>
                               </Card>
                               <br />
-                              <p className="dark:text-[#cccccc]">네트워크 추가사항</p>
+                              <p className="dark:text-[#cccccc]">
+                                네트워크 추가사항
+                              </p>
                               <br />
                               <Card className="p-4 dark:text-[#cccccc]">
                                 {DataParse.Network_Requirements}
@@ -421,49 +433,22 @@ function Row({ row }) {
                             {isApproved === "true" && (
                               <>
                                 <p className="dark:text-[#cccccc]">
-                                  먼저 리전을 선택해주세요.
-                                </p>
-                                <Select onValueChange={setSelectedRegion}>
-                                  <SelectTrigger className="w-[180px] dark:bg-[#cccccc]">
-                                    <SelectValue placeholder="서버 구역을 선택해주세요." />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="computer6">
-                                      6번 서버 (HPE)
-                                    </SelectItem>
-                                  </SelectContent>
-                                </Select>
-                                <p className="dark:text-[#cccccc]">
-                                  실제로 생성할 서버 이름을 적습니다.
-                                </p>
-                                <Input
-                                  className="dark:bg-[#cccccc]"
-                                  value={serverName}
-                                  onChange={(e) =>
-                                    setServerName(e.target.value)
-                                  }
-                                  placeholder={serverName}
-                                />
-                                <p className="dark:text-[#cccccc]">
-                                  실제로 생성할 타입을 적어주세요.
-                                </p>
-                                <Select onValueChange={setServertype}>
-                                  <SelectTrigger className="w-[180px] dark:bg-[#cccccc]">
-                                    <SelectValue placeholder="타입을 선택해주세요" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="qemu">VM</SelectItem>
-                                    <SelectItem value="lxc">lxc</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                                <p className="dark:text-[#cccccc]">
-                                  실제로 생성된 ID을 입력해주세요.
+                                  VM ID을 지정해주세요.
                                 </p>
                                 <Input
                                   className="dark:bg-[#cccccc]"
                                   value={vmId}
                                   onChange={(e) => setVmId(e.target.value)}
                                   placeholder={vmId}
+                                />
+                                <p className="dark:text-[#cccccc]">
+                                  VM에 할당할 IP를 입력해주세요.
+                                </p>
+                                <Input
+                                  className="dark:bg-[#cccccc]"
+                                  value={vmip}
+                                  onChange={(e) => setVmip(e.target.value)}
+                                  placeholder={vmip}
                                 />
                                 <p className="dark:text-[#cccccc]">
                                   승인하고 기타 네트워크 사항에 대해 적어주세요.
@@ -659,7 +644,9 @@ function Judgment() {
                 <img src="./image/161593018.png" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">ASW Practice Platform</span>
+                <span className="truncate font-semibold">
+                  ASW Practice Platform
+                </span>
                 <span className="truncate text-xs">Deu Univ region</span>
               </div>
               <ChevronsUpDown className="ml-auto" />
@@ -838,7 +825,9 @@ function Judgment() {
                       <TableCell sx={{ color: "gray" }}>신청자</TableCell>
                       <TableCell sx={{ color: "gray" }}>서버이름</TableCell>
                       <TableCell sx={{ color: "gray" }}>신청시간</TableCell>
-                      <TableCell sx={{ color: "gray" }}>이전 신청결과</TableCell>
+                      <TableCell sx={{ color: "gray" }}>
+                        이전 신청결과
+                      </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
