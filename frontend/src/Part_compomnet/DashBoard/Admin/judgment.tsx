@@ -193,7 +193,7 @@ function Row({ row }) {
         if (restApi[index].value == "0") {
           restApi[index].label = `${restApi[index].label} (사용전)`;
         } else {
-          restApi[index].label = `${restApi[index].label} (사용중)`;
+          restApi[index].label = `${restApi[index].label} (사용중 ✅)`;
         }
       }
       setNetworkstatus(restApi);
