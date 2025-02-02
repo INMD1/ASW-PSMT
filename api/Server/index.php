@@ -273,7 +273,7 @@ if ($request_method == 'GET') {
                         $servertype = $input["servertype"];
                         $date = date("Y-m-d", time());
                         $vmip = $input["vmip"];
-                        $stmt = $conn->prepare("UPDATE port_forwarding SET using_status = 1 WHERE internal_ip = $vmip");
+                        $stmt = $conn->prepare("UPDATE port_forwarding SET using_status = 1 WHERE internal_ip = '$vmip';");
 
                         $message = "<!DOCTYPE html>
                                         <html>
