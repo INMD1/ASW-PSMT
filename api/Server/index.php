@@ -227,7 +227,7 @@ if ($request_method == 'GET') {
 
                 if ($stmt->execute()) {
                     if ($Appcet == 3812) {
-                        $servername = $input["Servername"];                    
+                        $servername = $input["Servername"];
                         $date = date("Y-m-d", time());
 
                         $message = "<!DOCTYPE html>
@@ -273,8 +273,7 @@ if ($request_method == 'GET') {
                         $servertype = $input["servertype"];
                         $date = date("Y-m-d", time());
                         $vmip = $input["vmip"];
-                        $stmt = $conn->prepare("UPDATE port_forwarding SET using_status = 1 WHERE internal_ip = ?");
-                        $stmt->bind_param("s", $vmip);
+                        $stmt = $conn->prepare("UPDATE port_forwarding SET using_status = 1 WHERE internal_ip = $vmip");
 
                         $message = "<!DOCTYPE html>
                                         <html>
