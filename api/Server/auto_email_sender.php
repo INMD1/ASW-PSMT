@@ -36,7 +36,7 @@ while (true) {
 
         // HTML 이메일 본문 구성
         $message = "<html><body>";
-        $message .= "<h2>새로운 애플리케이션 등록 정보</h2>";
+        $message .= "<h2>ASW Practice Platform 새로운 애플리케이션 등록 정보</h2>";
         $message .= "<table border='1' cellpadding='8' cellspacing='0'>";
 
         foreach ($content as $key => $value) {
