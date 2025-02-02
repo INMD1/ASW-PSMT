@@ -25,7 +25,7 @@ function checkAdmin($conn, $email)
 {
     // 개발모드가 아니면 원래 데이터베이스에 연결을 해야한다.
     if ($_ENV['Type'] == 'main') {
-        $conn = new mysqli($_ENV['DB_HOST'], $_ENV['DB_USERNAME'], $_ENV['DB_PASSWORD'], 'Dcloud_Auth', $_ENV['DB_PORT']);
+        $conn = new mysqli($_ENV['DB_HOST'], $_ENV['DB_USERNAME'], $_ENV['DB_PASSWORD'], 'Auth', $_ENV['DB_PORT']);
     }
     $stmt = $conn->prepare("SELECT Admin FROM User_infomaiton WHERE email = ?");
     $stmt->bind_param("s", $email);
