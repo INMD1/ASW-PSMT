@@ -187,14 +187,14 @@ function Proxmox_vm_status({ VMID }: { VMID: string }): JSX.Element {
                   </TableBody>
                 </Table>
               </div>
-              <div className="min-w-[20vw] p-5">
-                <p>[네트워크 추가 설정 안내]</p>
-                <div className="p-3">
-                  {vminfo.NetworkInfo == ""
-                    ? "전달된 값이 없습니다."
-                    : vminfo.NetworkInfo}
+              {vminfo.NetworkInfo == "" ? (
+                ""
+              ) : (
+                <div className="min-w-[20vw] p-5">
+                  <p>[네트워크 추가 설정 안내]</p>
+                  <div className="p-3">vminfo.NetworkInfo</div>
                 </div>
-              </div>
+              )}
             </div>
           </Card>
         </div>
@@ -202,10 +202,12 @@ function Proxmox_vm_status({ VMID }: { VMID: string }): JSX.Element {
           <div className=" mb-8 md:mb-0 ">
             <Card className="p-4">
               <div className="grid">
-                <p>서버 정보</p>
+                <p>서버 네트워크 정보</p>
                 <Table>
                   <TableHeader>
                     <TableRow>
+                      <TableHead className="">Invoice</TableHead>
+                      <TableHead className="text-center">값</TableHead>
                       <TableHead className="">Invoice</TableHead>
                       <TableHead className="text-center">값</TableHead>
                     </TableRow>
@@ -214,16 +216,22 @@ function Proxmox_vm_status({ VMID }: { VMID: string }): JSX.Element {
                     <TableRow>
                       <TableCell className="font-medium">외부 IP</TableCell>
                       <TableCell className="text-left">
-                        113.198.229.158
+                        113.198.229.159
                       </TableCell>
+                      <TableCell className="font-medium">SSH 포트</TableCell>
+                      <TableCell className="text-left">{vminfo.ssh}</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell className="font-medium">내부 IP</TableCell>
                       <TableCell className="text-left">{vminfo.vmip}</TableCell>
+                      <TableCell className="font-medium">mysql 포트</TableCell>
+                      <TableCell className="text-left">
+                        {vminfo.mysql}
+                      </TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium">SSH 포트</TableCell>
-                      <TableCell className="text-left">Test Port</TableCell>
+                      <TableCell className="font-medium">http 포트</TableCell>
+                      <TableCell className="text-left">{vminfo.http}</TableCell>
                     </TableRow>
                     <hr />
                   </TableBody>
