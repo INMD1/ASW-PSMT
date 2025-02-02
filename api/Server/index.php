@@ -229,6 +229,9 @@ if ($request_method == 'GET') {
                     if ($Appcet == 3812) {
                         $servername = $input["Servername"];
                         $date = date("Y-m-d", time());
+                        $stmt = $conn->prepare("UPDATE port_forwarding SET using_status = 1 WHERE internal_ip = ?");
+                        $stmt->bind_param("s", $input["vmip"]);
+
                         $message = "<!DOCTYPE html>
                                         <html>
                                         <head>
