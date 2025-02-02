@@ -269,17 +269,13 @@ if ($request_method == 'GET') {
                         $NetworkInfo = $input["NetworkInfo"];
                         $servertype = $input["servertype"];
                         $date = date("Y-m-d", time());
+
+                        //사용된 IP 데이터베이스 반영
                         $vmip = $input["vmip"];
                         $stmt = $conn->prepare("UPDATE port_forwarding SET using_status = 1 WHERE internal_ip = ?");
                         $stmt->bind_param("s", $vmip);
                         $stmt->execute();
-                        if (!$stmt) {
-                            die("Prepare failed: " . $conn->error);
-                        }
-
-                        if (!$stmt->execute()) {
-                            die("Execute failed: " . $stmt->error);
-                        }
+         
                         $message = "<!DOCTYPE html>
                                         <html>
                                         <head>
