@@ -40,24 +40,41 @@ composer require saleh7/proxmox-ve_php_api
 아파치 같은 경우 내부에 htdocs라는 아파치 설정파일이 있어서 그냥 사용하시면 됨니다
 
 ## nginx
-nginx는 아래에 예시 문을참고해서 리버스 프록시 해주시기 바람니다.
+nginx는 아래에 예시를 참고해서 리버스 프록시 해주시기 바람니다.
 ```
-...생락
+    root /var/www/ASW-PSMT;
     index index.html index.php;
-    root /var/www/html/php_student;
+    # React 정적 파일 경로 처리
+    location /assets/ {
+        alias /var/www/ASW-PSMT/site/assets/;
+    }
+    location /images/ {
+        alias /var/www/ASW-PSMT/site/images/;
+    }
+    # PHP 파일 요청 처리
+    location / {
+        try_files $uri $uri/ /public/index.php$is_args$args;
+        # CORS 설정
+        add_header 'Access-Control-Allow-Origin' '*';
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS, DELETE, PUT';
+        add_header 'Access-Control-Allow-Headers' 'Origin, Content-Type, Accept, Authorization';
+    }
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+        # PHP 요청에도 CORS 적용
+        add_header 'Access-Control-Allow-Origin' '*';
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS, DELETE, PUT';
+        add_header 'Access-Control-Allow-Headers' 'Origin, Content-Type, Accept, Authorization';
+    }
     location /.well-known/acme-challenge {
         proxy_set_header Host $host;
         proxy_set_header X-Real_IP $remote_addr;
         proxy_set_header X-Forwarded-For $remote_addr:$remote_port;
         proxy_pass http://127.0.0.1:9180;
     }
-    location ~ [^/]\.php(/|$) {
-        include snippets/fastcgi-php.conf;
-        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-        include fastcgi_params;
-    }
-...생락
 ```
 
 # 라이센스
