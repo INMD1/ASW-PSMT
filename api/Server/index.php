@@ -273,7 +273,13 @@ if ($request_method == 'GET') {
                         $stmt = $conn->prepare("UPDATE port_forwarding SET using_status = 1 WHERE internal_ip = ?");
                         $stmt->bind_param("s", $vmip);
                         $stmt->execute();
-                        
+                        if (!$stmt) {
+                            die("Prepare failed: " . $conn->error);
+                        }
+
+                        if (!$stmt->execute()) {
+                            die("Execute failed: " . $stmt->error);
+                        }
                         $message = "<!DOCTYPE html>
                                         <html>
                                         <head>
