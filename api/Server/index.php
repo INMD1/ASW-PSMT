@@ -227,11 +227,8 @@ if ($request_method == 'GET') {
 
                 if ($stmt->execute()) {
                     if ($Appcet == 3812) {
-                        $servername = $input["Servername"];
-                        $vmip = $input["vmip"];
+                        $servername = $input["Servername"];                    
                         $date = date("Y-m-d", time());
-                        $stmt = $conn->prepare("UPDATE port_forwarding SET using_status = 1 WHERE internal_ip = ?");
-                        $stmt->bind_param("s", $vmip);
 
                         $message = "<!DOCTYPE html>
                                         <html>
@@ -249,7 +246,6 @@ if ($request_method == 'GET') {
                                                 <ul style=\"list-style-type: none; padding-left: 0;\">
                                                     <li><strong>프로젝트명:</strong> {$servername}</li>
                                                     <li><strong>승인일:</strong> {$date}</li>
-                                                    <li><strong>내부 IP:</strong> {$vmip}</li>
                                                 </ul>
                                                 
                                                 <h3 style=\"color: #3498db;\">다음 단계</h3>
@@ -276,6 +272,10 @@ if ($request_method == 'GET') {
                         $NetworkInfo = $input["NetworkInfo"];
                         $servertype = $input["servertype"];
                         $date = date("Y-m-d", time());
+                        $vmip = $input["vmip"];
+                        $stmt = $conn->prepare("UPDATE port_forwarding SET using_status = 1 WHERE internal_ip = ?");
+                        $stmt->bind_param("s", $vmip);
+
                         $message = "<!DOCTYPE html>
                                         <html>
                                         <head>
@@ -291,13 +291,14 @@ if ($request_method == 'GET') {
                                                 <h3 style=\"color: #3498db;\">승인 세부사항</h3>
                                                 <ul style=\"list-style-type: none; padding-left: 0;\">
                                                     <li><strong>프로젝트명:</strong> {$servername}</li>
+                                                    <li><strong>배정된 내부 IP:</strong> {$vmip}</li>
                                                     <li><strong>완성 일자:</strong> {$date}</li>
                                                 </ul>
                                                 
                                                 <h3 style=\"color: #3498db;\">서버 배치 정보</h3>
                                                 <ul style=\"list-style-type: none; padding-left: 0;\">
                                                     <li><strong>배치 서버:</strong> Computer6</li>
-                                                    <li><strong>VM ID:</strong> {$vmId}, Type: {$servertype}</li>
+                                                    <li><strong>VM ID:</strong> {$vmId}</li>
                                                 </ul>
                                                 <h5 style=\"color: #3498db;\">네트워크 안내사항</h5>
                                                 <p>{$NetworkInfo}</p>
