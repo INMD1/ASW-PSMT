@@ -249,6 +249,7 @@ if ($request_method == 'GET') {
                                                 <ul style=\"list-style-type: none; padding-left: 0;\">
                                                     <li><strong>프로젝트명:</strong> {$servername}</li>
                                                     <li><strong>승인일:</strong> {$date}</li>
+                                                    <li><strong>내부 IP:</strong> {$vmip}</li>
                                                 </ul>
                                                 
                                                 <h3 style=\"color: #3498db;\">다음 단계</h3>
