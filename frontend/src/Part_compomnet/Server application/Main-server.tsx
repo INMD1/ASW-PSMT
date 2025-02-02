@@ -176,10 +176,9 @@ function Main_server({ className }: React.HTMLAttributes<HTMLDivElement>) {
   const [userinfo] = useAtom(User_info);
   //@ts-ignore
   const info: userinfo = userinfo;
-
   const [logCount] = useAtom(login_Count);
-
   const [selectedOption, setSelectedOption] = useState("선택안함");
+  
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {

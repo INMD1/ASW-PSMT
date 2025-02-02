@@ -1,8 +1,8 @@
 <?php
 
-//#####################################
-//# 이 파일은 서버신청에 관련됨 파일임  #
-//#####################################
+// #####################################
+// # 이 파일은 서버신청에 관련됨 파일임  #
+// #####################################
 
 error_reporting(E_ALL);
 ini_set('display_errors', '0');
@@ -10,7 +10,7 @@ ini_set('display_errors', '0');
 require(__DIR__ . '/../../vendor/autoload.php');
 header('Content-Type: application/json');
 
-//현재 폴더에 있는 ENV로드드
+//현재 폴더에 있는 ENV로드
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
@@ -20,7 +20,7 @@ if ($conn->connect_error) {
     die(json_encode(['Error' => "데이터베이스 연결 실패: " . $conn->connect_error]));
 }
 
-//관리자 인지확인하는 코드드
+//관리자 인지확인하는 코드
 function checkAdmin($conn, $email)
 {
     // 개발모드가 아니면 원래 데이터베이스에 연결을 해야한다.
@@ -82,8 +82,14 @@ if ($request_method == 'GET') {
                 $result = $conn->query("SELECT * FROM Server_application");
                 $data = $result->fetch_all(MYSQLI_ASSOC);
 
+                //mysql 연결종료
+                $conn->close();
+
                 echo json_encode($data);
             } else {
+                //mysql 연결종료
+                $conn->close();
+
                 http_response_code(403);
                 echo json_encode(['error' => '권한이 없습니다.']);
             }
@@ -98,10 +104,45 @@ if ($request_method == 'GET') {
                 $result = $stmt->get_result();
 
                 $data = $result->fetch_all(MYSQLI_ASSOC);
+
+                //mysql 연결종료
+                $conn->close();
+
                 echo json_encode($data);
             } else {
                 http_response_code(400);
                 echo json_encode(['error' => '신청한 ID를 적어주십시오.']);
+            }
+            break;
+        case 'check_ip':
+            if (checkAdmin($conn, $email)) {
+                $sql = "SELECT * FROM port_forwarding";
+                $result = $conn->query($sql);
+
+                $port_forwarding = [];
+
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        $port_forwarding[] = [
+                            'label' => $row['internal_ip'],
+                            'value' => $row['using_status'],
+                            'ip' => $row['internal_ip'],
+                            'ssh' => $row['wan_ssh'],
+                            'mysql' => $row['wan_mysql'],
+                            'http' => $row['wan_https'],
+                        ];
+                    }
+                }
+
+                //mysql 연결종료
+                $conn->close();
+
+                $json_data = json_encode($port_forwarding, JSON_PRETTY_PRINT);
+                header('Content-Type: application/json');
+                echo $json_data;
+            } else {
+                http_response_code(403);
+                echo json_encode(['error' => '권한이 없습니다.']);
             }
             break;
         default:
@@ -158,15 +199,21 @@ if ($request_method == 'GET') {
                             </body>
                         </html>";
                 send_to_mail($email, "[ASW Practice Platform] " . $input["Servername"] . '서버 신청 접수 확인', $message);
+
+                //mysql 연결종료
+                $conn->close();
+
                 http_response_code(201);
                 echo "데이터가 성공적으로 삽입되었습니다.";
-
             } else {
+                //mysql 연결종료
+                $conn->close();
+
                 http_response_code(400);
                 echo "데이터 삽입 실패: " . $stmt->error;
             }
             break;
-        //관리자 일경우 승인 미승인이 결정을 짓는곳곳
+        //관리자 일경우 승인 미승인이 결정을 짓는곳
         case 'admin':
             //이메일로 확인
             if (checkAdmin($conn, $email)) {
@@ -216,7 +263,7 @@ if ($request_method == 'GET') {
                                             </div>
                                         </body>
                                     </html>";
-                        send_to_mail($input["email"],"[ASW Practice Platform] " . $input["Servername"] . '서버 제작 승인 안내', $message);
+                        send_to_mail($input["email"], "[ASW Practice Platform] " . $input["Servername"] . '서버 제작 승인 안내', $message);
                     } else if ($Appcet == 381) {
                         $servername = $input["Servername"];
                         $region = $input["region"];
@@ -304,11 +351,17 @@ if ($request_method == 'GET') {
                                             </div>
                                         </body>
                                     </html>";
-                        send_to_mail($input["email"],"[ASW Practice Platform] " . $input["Servername"] . '서버 제작 거절 안내', $message);
+                        send_to_mail($input["email"], "[ASW Practice Platform] " . $input["Servername"] . '서버 제작 거절 안내', $message);
                     }
+                    //mysql 연결종료
+                    $conn->close();
+
                     http_response_code(200);
                     echo json_encode(['message' => $input['name']]);
                 } else {
+                    //mysql 연결종료
+                    $conn->close();
+
                     http_response_code(400);
                     echo json_encode(['error' => '데이터 업데이트 실패: ' . $stmt->error]);
                 }

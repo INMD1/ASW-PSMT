@@ -66,6 +66,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import Select from "react-select";
 
 //@ts-ignore
 function Row({ row }) {
@@ -76,13 +77,13 @@ function Row({ row }) {
   );
   const [isApproved, setIsApproved] = useState("");
   const [rejectionReason, setRejectionReason] = useState("");
-  const [vmip, setVmip] = useState("");
   const [NetworkInfo, setNetworkInfo] = useState("");
   const [open, setOpen] = React.useState(false);
   //@ts-ignore
   const [userinfo] = useAtom(User_info);
   const [Accessjwt] = useAtom(Access_jwt);
-  console.log(Accessjwt);
+  const [Networkstatus, setNetworkstatus] = useState([]);
+  const [selectedOption, setSelectedOption] = useState("선택안함");
 
   const handleSubmit = async () => {
     const result_content = JSON.parse(row.content);
@@ -96,7 +97,14 @@ function Row({ row }) {
         delete result_content.rejectionReason;
       } finally {
         result_content.vmId = vmId;
-        result_content.vmip = vmip;
+        //@ts-ignore
+        result_content.vmip = selectedOption.ip;
+        //@ts-ignore
+        result_content.ssh = selectedOption.ssh;
+        //@ts-ignore
+        result_content.mysql = selectedOption.mysql;
+        //@ts-ignore
+        result_content.http = selectedOption.http;
         result_content.NetworkInfo = NetworkInfo;
         result = {
           content: result_content,
@@ -126,7 +134,7 @@ function Row({ row }) {
     // 먼저 데이터베이스에 저장
     const response = await fetch(
       //@ts-ignore
-      `/api/proxmox/?mode=createvm&token=${Accessjwt.Access}&newVmid=${vmId}&newVmName=${DataParse.Servername}&sourceVmid=${DataParse.server.createid}&ciUser=${DataParse.Username}&ciPassword=${DataParse.User_pw}&ipAddress=${vmip}`,
+      `/api/proxmox/?mode=createvm&token=${Accessjwt.Access}&newVmid=${vmId}&newVmName=${DataParse.Servername}&sourceVmid=${DataParse.server.createid}&ciUser=${DataParse.Username}&ciPassword=${DataParse.User_pw}&ipAddress=${selectedOption.ip}`,
       {
         method: "GET",
       }
@@ -173,6 +181,30 @@ function Row({ row }) {
       }
     }
   };
+
+  async function getIpStatus() {
+    try {
+      const response = await fetch(
+        //@ts-ignore
+        `/api/server_application?type=check_ip&email=${userinfo.email}&username=${userinfo.name}`
+      );
+      const restApi = await response.json();
+      for (let index = 0; index < restApi.length; index++) {
+        if (restApi[index].value == "0") {
+          restApi[index].label = `${restApi[index].label} (사용전)`;
+        } else {
+          restApi[index].label = `${restApi[index].label} (사용중)`;
+        }
+      }
+      setNetworkstatus(restApi);
+    } catch (error) {
+      console.error("API 호출 오류:", error);
+    }
+  }
+
+  useEffect(() => {
+    getIpStatus();
+  }, []);
 
   function DateReplace(data: string) {
     const date = new Date(data);
@@ -442,11 +474,14 @@ function Row({ row }) {
                                 <p className="dark:text-[#cccccc]">
                                   VM에 할당할 IP를 입력해주세요.
                                 </p>
-                                <Input
-                                  className="dark:bg-[#cccccc]"
-                                  value={vmip}
-                                  onChange={(e) => setVmip(e.target.value)}
-                                  placeholder={vmip}
+                                <Select
+                                  className="my-react-select-container"
+                                  classNamePrefix="my-react-select"
+                                  defaultValue={Networkstatus}
+                                  //@ts-ignore
+                                  onChange={setSelectedOption}
+                                  //@ts-ignore
+                                  options={Networkstatus}
                                 />
                                 <p className="dark:text-[#cccccc]">
                                   승인하고 기타 네트워크 사항에 대해 적어주세요.
@@ -486,7 +521,6 @@ function Judgment() {
   const [Accessjwt, setAccessjwt] = useAtom(Access_jwt);
   const [userinfo, setUserInfo] = useAtom(User_info);
   const [Jsondata, setJsondata] = React.useState([]);
-
   const [navData, setNavData] = useState({
     navMain: [
       {
