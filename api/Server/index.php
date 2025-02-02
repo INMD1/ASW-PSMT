@@ -134,9 +134,6 @@ if ($request_method == 'GET') {
                     }
                 }
 
-                //mysql 연결종료
-                $conn->close();
-
                 $json_data = json_encode($port_forwarding, JSON_PRETTY_PRINT);
                 header('Content-Type: application/json');
                 echo $json_data;
@@ -273,8 +270,10 @@ if ($request_method == 'GET') {
                         $servertype = $input["servertype"];
                         $date = date("Y-m-d", time());
                         $vmip = $input["vmip"];
-                        $stmt = $conn->prepare("UPDATE port_forwarding SET using_status = 1 WHERE internal_ip = '$vmip';");
-
+                        $stmt = $conn->prepare("UPDATE port_forwarding SET using_status = 1 WHERE internal_ip = ?");
+                        $stmt->bind_param("s", $vmip);
+                        $stmt->execute();
+                        
                         $message = "<!DOCTYPE html>
                                         <html>
                                         <head>
@@ -358,15 +357,9 @@ if ($request_method == 'GET') {
                                     </html>";
                         send_to_mail($input["email"], "[ASW Practice Platform] " . $input["Servername"] . '서버 제작 거절 안내', $message);
                     }
-                    //mysql 연결종료
-                    $conn->close();
-
                     http_response_code(200);
-                    echo json_encode(['message' => $input['name']]);
+                    echo json_encode(['message' => "처리 완료료"]);
                 } else {
-                    //mysql 연결종료
-                    $conn->close();
-
                     http_response_code(400);
                     echo json_encode(['error' => '데이터 업데이트 실패: ' . $stmt->error]);
                 }
