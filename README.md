@@ -3,6 +3,16 @@
 ASW-PSMT는 서버 시스템 관리 및 신청을 위한 웹 애플리케이션입니다.<br/>
 이 프로젝트는 React와 PHP를 결합하여 프론트엔드와 백엔드를 통합한 효율적인 서버 관리 솔루션을 제공합니다.
 
+# 개발 기록
+### 2025-02-04 
+기본 기능 개발 및 테스트중 
+
+# 다음 목표
+ - [ ]백엔드,프론트 모듈 세분화하기
+ - [ ]API 보안 수정하기
+ - [ ]API 문서 제작하기
+ - [ ]학생들 사용가이드 문서 제작하기
+
 # 주요 기능
 
 1. 게시판 기능
@@ -33,6 +43,7 @@ ASW-PSMT는 서버 시스템 관리 및 신청을 위한 웹 애플리케이션�
 composer require firebase/php-jwt
 composer require vlucas/phpdotenv
 composer require saleh7/proxmox-ve_php_api
+composer require phpmailer/phpmailer
 ```
 > 설치되어 있지만 오류가 생기면 재설치 해주세요.
 
