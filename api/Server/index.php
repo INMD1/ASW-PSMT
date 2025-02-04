@@ -39,7 +39,7 @@ function checkAdmin($conn, $email)
     return false;
 }
 
-//데이터를 받아오는 코드드
+//데이터를 받아오는 코드
 $request_method = $_SERVER['REQUEST_METHOD'];
 $input = json_decode(file_get_contents('php://input'), TRUE);
 

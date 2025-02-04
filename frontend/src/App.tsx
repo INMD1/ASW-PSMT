@@ -27,7 +27,7 @@ function App() {
 
           <Route path="/site/server/subscription" element={<Main_server />}></Route>
           <Route path="/site/server/subscription_mobile" element={< Main_server_mobile />}></Route>
-         
+
           <Route path="/site/dashboard" element={< Main_DashBoard />}></Route>
           <Route path="/site/server/show_Accpet" element={<Show_Appect />}></Route>
 
@@ -36,15 +36,20 @@ function App() {
           <Route path="/site/server/View_vm/:id" element={<View_vm />}></Route>
         </Routes>
         <footer className="mobile_none">
-         <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
-         <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">
-           © 2024{" "}
-           <a href="https://github.com/INMD1" className="hover:underline">
-             INMD1 And Dcloud
-           </a>
-           . All Rights Reserved.
-         </span>
-         <br />
+          <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
+          <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">
+            © 2025{" "}
+            producer: 
+            <a href="https://github.com/INMD1" className="hover:underline">
+              INMD1
+            </a>
+            {" "}And {" "}
+            <a href="https://github.com/D-Cloude" className="hover:underline">
+              D-Cloude
+            </a>
+            . All Rights Reserved.
+          </span>
+          <br />
         </footer>
       </BrowserRouter>
     </ThemeProvider>

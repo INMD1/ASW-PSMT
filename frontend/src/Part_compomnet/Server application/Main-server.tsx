@@ -401,8 +401,7 @@ function Main_server({ className }: React.HTMLAttributes<HTMLDivElement>) {
                       </FormControl>
                       <FormMessage />
                       <Label>
-                        * 용도보다 높은 타입을 선택하면 신청 거부가 당 할 수
-                        있습니다.
+                        * 용도보다 높은 타입을 선택하면 신청 거부가 당할 수 있습니다.
                       </Label>
                     </FormItem>
                     <p className="flex server_sub_sub_title">서버 계정 정보</p>
