@@ -116,7 +116,7 @@ try {
                     'name' => $newVmName,
                     'full' => 1,
                     'target' => 'computer6',
-                    'storage' => 'Template', //다른 저장소로 변경이 가능하다.
+                    'storage' => 'Storage', //다른 저장소로 변경이 가능하다.
                 ];
 
                 // 클론하기
