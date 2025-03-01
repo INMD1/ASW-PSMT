@@ -60,6 +60,11 @@ function Mainpage_index() {
         }
         fetchData();
     }, []);
+
+    const handleOpenNewTab = (url: string | URL | undefined) => {
+        window.open(url, "_blank", "noopener, noreferrer");
+    };
+
     return (
 
         <div className="p-5 md:p-20">
@@ -73,10 +78,22 @@ function Mainpage_index() {
                         <p className="mianpage_header">플랫폼에 오신걸 환영합니다.</p>
                         <div className="lg:h-4 h-1"></div>
                         <p className="mianpage_sidheader ">이 플랫폼은 Dcloud동아리와 함께 합니다.</p>
-                        <div className="flex lg:justify-end mt-3 lg:mt-5 ">
-                            <Button className="h-10 w-20 lg:h-16 lg:w-40" onClick={() => {
-                                navigate("/site/server/subscription");
-                            }} >
+                        <div className="flex lg:justify-end mt-3 lg:mt-5 gap-5">
+                            <Button
+                                className="h-10 w-20 lg:h-16 lg:w-40"
+                                onClick={() => {
+                                    handleOpenNewTab("https://docs.dcloud.p-e.kr/");
+                                }}
+                            >
+                                <p className="mainpage_button">Docs 방문</p>
+                            </Button>
+
+                            <Button
+                                className="h-10 w-20 lg:h-16 lg:w-40"
+                                onClick={() => {
+                                    navigate("/site/server/subscription");
+                                }}
+                            >
                                 <p className="mainpage_button">서버 신청</p>
                             </Button>
                         </div>
