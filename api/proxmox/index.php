@@ -1,39 +1,32 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', '0');
 //모듈 폴더 path정의
 require(__DIR__ . '/../../vendor/autoload.php');
-
 use Proxmox\Request;
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
-$Proxmox_id = $_ENV["Proxmox_id"];
-$Proxmox_Password = $_ENV["Proxmox_Password"];
-$Proxmox_ip = $_ENV["Proxmox_ip"];
-$Proxmox_port = $_ENV["Proxmox_port"];
-
 $configure = [
-    'hostname' => $Proxmox_ip,
-    'username' => $Proxmox_id,
-    'password' => $Proxmox_Password,
+    'hostname' => $_ENV["Proxmox_ip"],
+    'username' => $_ENV["Proxmox_id"],
+    'password' => $_ENV["Proxmox_Password"],
     // 'realm'     => 'pam',
-    'port' => $Proxmox_port
+    'port' => $_ENV["Proxmox_port"]
 ];
 
 //파라미터 사전 설정
-$parameter = $_GET["mode"] ?? null;
+$parameter = isset($_GET["mode"]) ? $_GET["mode"] : null;
 
 //VM을 조회시 어떤 VM을 조회할지 가져오기 
-$Search_VM = $_GET["vmid"] ?? null;
+$Search_VM = isset($_GET["vmid"]) ? $_GET["vmid"] : null;
 
 //실시간 데이터조회를 위한
-$node = $_GET["node"] ?? null;
-$type = $_GET["type"] ?? null;
+$node = isset($_GET["node"]) ? $_GET["node"] : null;
+$type = isset($_GET["type"]) ? $_GET["type"] : null;
 
 
 //내부에서 Department에서 토큰의 정보를 해석하게 한다. (필요 데이터 토큰)
+//내부 에서 돌아가는 코드 이기 때문에 외부에서는 작동이 안된다.
 function Auth($token)
 {
     $url = "localhost:8833/api/department?type=infoUser";
@@ -84,7 +77,7 @@ try {
 
         //실시간 정보 수집
         case 'livedata':
-            $ID = $_GET["id"] ?? null;
+            $ID = isset($_GET["id"]) ? $_GET["id"] : null;
             //{node}/qemu/{vmid}/status/current
             $nodes = Request::Request('/nodes/computer6/qemu/' . $ID . '/status/current', null, 'GET');
             echo json_encode($nodes);
@@ -96,12 +89,12 @@ try {
             $asdads = Auth($_GET["token"]);
             if ($asdads == "true") {
                 //사전에 필요한 정보 삽입
-                $sourceVmid = $_GET["sourceVmid"] ?? null;
-                $newVmid = $_GET["newVmid"] ?? null;
-                $newVmName = $_GET["newVmName"] ?? null;
-                $ciUser = $_GET["ciUser"] ?? null;
-                $ciPassword = $_GET["ciPassword"] ?? null;
-                $ipAddress = $_GET["ipAddress"] ?? null;
+                $sourceVmid = isset($_GET["sourceVmid"]) ? $_GET["sourceVmid"] : null;
+                $newVmid = isset($_GET["newVmid"]) ? $_GET["newVmid"] : null;
+                $newVmName = isset($_GET["newVmName"]) ? $_GET["newVmName"] : null;
+                $ciUser = isset($_GET["ciUser"]) ? $_GET["ciUser"] : null;
+                $ciPassword = isset($_GET["ciPassword"]) ? $_GET["ciPassword"] : null;
+                $ipAddress = isset($_GET["ipAddress"]) ? $_GET["ipAddress"] : null;
 
                 // 3개 정보중 하나라도 없으면 오류 반환
                 if (!$sourceVmid || !$newVmid || !$newVmName || !$ciUser || !$ciPassword || !$ipAddress) {
@@ -168,8 +161,7 @@ try {
         //VM 서버 시작
         case "power_on":
             //토큰으로 권한 확인한다.
-            $vmid = $_GET["vmid"] ?? null;
-
+            $vmid = isset($_GET["vmid"]) ? $_GET["vmid"] : null;
             $startResult = Request::Request("/nodes/computer6/qemu/{$vmid}/status/start", null, 'POST');
             $array = get_object_vars($startResult);
             if ($array["data"] != null) {
@@ -179,10 +171,6 @@ try {
                 http_response_code(500);
                 echo json_encode(['error' => "Failed to start VM", 'details' => $startResult]);
             }
-            break;
-
-        case "test":
-            Auth($_GET["token"]);
             break;
 
         //다른 상황이 입력되는 경우

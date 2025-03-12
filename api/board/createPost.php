@@ -10,7 +10,8 @@ $dotenv->load();
 $conn = new mysqli($_ENV['DB_HOST'], $_ENV['DB_USERNAME'], $_ENV['DB_PASSWORD'], $_ENV['DB_NAME'], $_ENV['DB_PORT']);
 
 if ($conn->connect_error) {
-    die(json_encode(['Error' => "데이터베이스 연결 실패: " . $conn->connect_error]));
+    die(json_encode(['Error' => "데이터베이스 연결 실패: " . $conn->connect_error])); //나 죽음
+    $conn->close();
 }
 
 $request_method = $_SERVER['REQUEST_METHOD'];
@@ -24,7 +25,7 @@ if ($request_method == 'GET') {
     echo json_encode(['error' => 'Method Not Allowed']);
 }
 
-$conn->close();
+
 
 function handlePostRequest($conn)
 {
