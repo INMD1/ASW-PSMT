@@ -1,6 +1,7 @@
 <?php
 //모듈 폴더 path정의
 require(__DIR__ . '/../../vendor/autoload.php');
+
 use Proxmox\Request;
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
@@ -10,7 +11,6 @@ $configure = [
     'hostname' => $_ENV["Proxmox_ip"],
     'username' => $_ENV["Proxmox_id"],
     'password' => $_ENV["Proxmox_Password"],
-    // 'realm'     => 'pam',
     'port' => $_ENV["Proxmox_port"]
 ];
 
@@ -158,7 +158,7 @@ try {
             }
             break;
 
-        //VM 서버 시작
+        //VM 서버 전원 설정
         case "power_on":
             //토큰으로 권한 확인한다.
             $vmid = isset($_GET["vmid"]) ? $_GET["vmid"] : null;
@@ -166,13 +166,38 @@ try {
             $array = get_object_vars($startResult);
             if ($array["data"] != null) {
                 http_response_code(200);
-                echo json_encode(['success' => "VM cloned, configured, and started successfully", 'vmid' => $vmid]);
+                echo json_encode(['success' => "VM Power_on, configured, and started successfully", 'vmid' => $vmid]);
             } else {
                 http_response_code(500);
                 echo json_encode(['error' => "Failed to start VM", 'details' => $startResult]);
             }
             break;
-
+        case "power_shutdown":
+            //토큰으로 권한 확인한다.
+            $vmid = isset($_GET["vmid"]) ? $_GET["vmid"] : null;
+            $startResult = Request::Request("/nodes/computer6/qemu/{$vmid}/status/shutdown", null, 'POST');
+            $array = get_object_vars($startResult);
+            if ($array["data"] != null) {
+                http_response_code(200);
+                echo json_encode(['success' => "VM shutdown, configured, and started successfully", 'vmid' => $vmid]);
+            } else {
+                http_response_code(500);
+                echo json_encode(['error' => "Failed to shutdown VM", 'details' => $startResult]);
+            }
+            break;
+        case "power_stop":
+            //토큰으로 권한 확인한다.
+            $vmid = isset($_GET["vmid"]) ? $_GET["vmid"] : null;
+            $startResult = Request::Request("/nodes/computer6/qemu/{$vmid}/status/stop", null, 'POST');
+            $array = get_object_vars($startResult);
+            if ($array["data"] != null) {
+                http_response_code(200);
+                echo json_encode(['success' => "VM stop, configured, and started successfully", 'vmid' => $vmid]);
+            } else {
+                http_response_code(500);
+                echo json_encode(['error' => "Failed to stop VM", 'details' => $startResult]);
+            }
+            break;
         //다른 상황이 입력되는 경우
         default:
             http_response_code(400);

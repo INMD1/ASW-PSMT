@@ -1,3 +1,4 @@
+import * as React from "react"
 import { useAtom } from "jotai";
 import { User_info } from "@/store/strore_data";
 import { useEffect, useState } from "react";
@@ -19,11 +20,52 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Cpu, HardDrive, Network } from "lucide-react";
+import { Check, ChevronsUpDown, Cpu, HardDrive, Network } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast, ToastContainer } from "react-toastify";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import {
+  Command,
+  CommandGroup,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command"
+import { cn } from "@/lib/utils"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+
+
+const frameworks = [
+  {
+    value: "on",
+    label: "시작",
+  },
+  {
+    value: "shutdown",
+    label: "종료",
+  },
+  {
+    value: "stop",
+    label: "정지",
+  }
+]
 
 function Proxmox_vm_status({ VMID }: { VMID: string }): JSX.Element {
+  const [open, setOpen] = React.useState(false)
+  const [Dialog, setDialog] = React.useState(false)
+  const [value, setValue] = React.useState("")
   const [userinfo] = useAtom(User_info);
   const [vminfo, setVminfo] = useState<any>({});
   const [data, setData] = useState<any>({});
@@ -68,14 +110,15 @@ function Proxmox_vm_status({ VMID }: { VMID: string }): JSX.Element {
     }
   };
 
-  async function StartVM() {
+  //전원 옵션 메뉴
+  async function Power_Option() {
     try {
       const response = await fetch(
         //@ts-ignore
-        `/api/proxmox/?mode=power_on&vmid=${vminfo.vmId}`
+        `/api/proxmox/?mode=power_${value}&vmid=${vminfo.vmId}`
       );
       if (response.status === 200) {
-        toast.success("서버가 시작 되었습니다. 새로고침을 해주세요.", {
+        toast.success("정상적으로 작업이 실행 되었습니다. 새로고침을 해주세요.", {
           position: "bottom-right",
           autoClose: 3000,
           hideProgressBar: false,
@@ -85,7 +128,7 @@ function Proxmox_vm_status({ VMID }: { VMID: string }): JSX.Element {
           theme: "colored",
         });
       } else {
-        toast.error("서버를 시작 하지 못했습니다.", {
+        toast.error("작업을 시작 하지 못했습니다.", {
           position: "bottom-right",
           autoClose: 3000,
           hideProgressBar: false,
@@ -106,6 +149,7 @@ function Proxmox_vm_status({ VMID }: { VMID: string }): JSX.Element {
         theme: "colored",
       });
     }
+    setValue("");
   }
 
   useEffect(() => {
@@ -126,17 +170,65 @@ function Proxmox_vm_status({ VMID }: { VMID: string }): JSX.Element {
         VM Monitor - 고유 ID: {vminfo.vmId}
       </h2>
 
-      {/* Status and Summary */}
+      {/* 서버 설정 부분 */}
       <div className="flex justify-between">
         <p className="title">서버 정보</p>
-        <Button
-          className=""
-          onClick={() => {
-            StartVM();
-          }}
-        >
-          서버 시작하기
-        </Button>
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              role="combobox"
+              aria-expanded={open}
+              className="w-[130px] justify-between"
+            >
+              {value
+                ? frameworks.find((framework) => framework.value === value)?.label
+                : "전원 옵션"}
+              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-[130px] p-0">
+            <Command>
+              <CommandList>
+                <CommandGroup>
+                  {frameworks.map((framework) => (
+                    <CommandItem
+                      key={framework.value}
+                      value={framework.value}
+                      onSelect={(currentValue) => {
+                        setValue(currentValue === value ? "" : currentValue)
+                        setOpen(false)
+                        setDialog(true)
+                      }}
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          value === framework.value ? "opacity-100" : "opacity-0"
+                        )}
+                      />
+                      {framework.label}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+        <AlertDialog open={Dialog}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>정말 이 작업을 실행하겟습니까?</AlertDialogTitle>
+              <AlertDialogDescription>
+                한번 시작 하면 취소할수 없습니다.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>취소</AlertDialogCancel>
+              <AlertDialogAction onClick={() => { setDialog(false); Power_Option(); }}>진행</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
       <br />
       <div className="gird md:flex gap-5">
