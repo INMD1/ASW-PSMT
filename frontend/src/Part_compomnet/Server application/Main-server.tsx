@@ -170,7 +170,7 @@ const options = [
 function Main_server({ className }: React.HTMLAttributes<HTMLDivElement>) {
   const [date, setDate] = React.useState<DateRange | undefined>({
     from: new Date(),
-    to: addDays(new Date(), 366 + 20),
+    to: addDays(new Date(), 100),
   });
   const navigate = useNavigate();
   const [userinfo] = useAtom(User_info);
@@ -178,7 +178,7 @@ function Main_server({ className }: React.HTMLAttributes<HTMLDivElement>) {
   const info: userinfo = userinfo;
   const [logCount] = useAtom(login_Count);
   const [selectedOption, setSelectedOption] = useState("선택안함");
-  
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -194,11 +194,20 @@ function Main_server({ className }: React.HTMLAttributes<HTMLDivElement>) {
     },
   });
 
-  // const navigate = useNavigate();
-
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     console.log("click");
-
+    toast.warning(
+      "서버 전송하고 있습니다. 성공적으로 제출했습니다 라고 뜰때까지 기다려 주십시오.",
+      {
+        position: "bottom-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "colored",
+      }
+    );
     if (logCount == 1) {
       let json = data;
       //@ts-ignore
@@ -291,16 +300,44 @@ function Main_server({ className }: React.HTMLAttributes<HTMLDivElement>) {
                 <div className="grid md:flex gap-x-8 grow">
                   <div className="grid">
                     <p className="flex server_sub_sub_title">사용자 정보</p>
-                    <div className="gap-y-2">
+                    <div className="gap-y-5">
                       <Label htmlFor="terms">이름</Label>
-                      <Input placeholder={info.name} disabled />
+                      <Input
+                        placeholder={
+                          info.name == undefined ? "로그인해주세요" : info.name
+                        }
+                        disabled
+                      />
+
                       <Label htmlFor="terms">이메일</Label>
-                      <Input placeholder={info.email} disabled />
+                      <Input
+                        placeholder={
+                          info.email == undefined
+                            ? "로그인해주세요"
+                            : info.email
+                        }
+                        disabled
+                      />
                       <Label htmlFor="terms">전화번호</Label>
-                      <Input placeholder={info.phone_number} disabled />
+                      <Input
+                        placeholder={
+                          info.phone_number == undefined
+                            ? "로그인해주세요"
+                            : info.phone_number
+                        }
+                        disabled
+                      />
                       <Label htmlFor="terms">학과</Label>
-                      <Input placeholder={info.student_class} disabled />
+                      <Input
+                        placeholder={
+                          info.student_class == undefined
+                            ? "로그인해주세요"
+                            : info.student_class
+                        }
+                        disabled
+                      />
                     </div>
+                    <br />
                     <p className="flex server_sub_sub_title">대여 정보</p>
                     <div className={cn("grid gap-2", className)}>
                       <Popover>
@@ -348,7 +385,7 @@ function Main_server({ className }: React.HTMLAttributes<HTMLDivElement>) {
                             <FormControl>
                               <Textarea
                                 className="h-60"
-                                placeholder=""
+                                placeholder="ex) 웹서버에서 팀과제 목적으로 구성합니다."
                                 {...field}
                               />
                             </FormControl>
@@ -401,7 +438,8 @@ function Main_server({ className }: React.HTMLAttributes<HTMLDivElement>) {
                       </FormControl>
                       <FormMessage />
                       <Label>
-                        * 용도보다 높은 타입을 선택하면 신청 거부가 당할 수 있습니다.
+                        * 용도보다 높은 타입을 선택하면 신청 거부가 당할 수
+                        있습니다.
                       </Label>
                     </FormItem>
                     <p className="flex server_sub_sub_title">서버 계정 정보</p>
@@ -451,7 +489,7 @@ function Main_server({ className }: React.HTMLAttributes<HTMLDivElement>) {
                           <FormControl>
                             <Textarea
                               className="h-40"
-                              placeholder=""
+                              placeholder="기본적으로 SSH,DB,WEB포트는 자동으로 나옴니다.도메인이 필요한 경우는 여기에 도메인명하고 내부망에서 나오는 포트를 입력해주세요."
                               {...field}
                             />
                           </FormControl>
@@ -462,8 +500,9 @@ function Main_server({ className }: React.HTMLAttributes<HTMLDivElement>) {
                   </div>
                   <div>
                     <p className="flex server_sub_sub_title">이용 약관</p>
+                    <br />
                     <Card
-                      className="md:w-[30vw] p-4 h-[40vh]"
+                      className="xl:w-[20vw] md:w-[30vw]  p-4 h-[40vh]"
                       style={{ overflowX: "auto", overflowY: "auto" }}
                     >
                       <MarkdownPreview
