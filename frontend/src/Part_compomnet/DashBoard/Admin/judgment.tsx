@@ -128,8 +128,27 @@ function Row({ row }) {
         content: result_content,
         isApproved: 3812,
       };
+      const createVM = await fetch(
+        //@ts-ignore
+        `/api/server_application?type=admin&email=${userinfo.email}&id=${row.id}&Appcet=${result.isApproved}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(result.content),
+        }
+      );
+      if (createVM.status === 200) {
+        toast.success("성공적으로 저장했습니다.", {
+          position: "bottom-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "colored",
+        });
+      }
     }
-
     // 여기서 결과를 저장하는 로직을 구현합니다.
     // 먼저 데이터베이스에 저장
     const response = await fetch(
@@ -241,10 +260,10 @@ function Row({ row }) {
           {row.Appcet === "0"
             ? "⚪️ 진행중"
             : row.Appcet === "3812"
-            ? "🟠 승인이 되었지만 제작중입니다."
-            : row.Appcet === "381"
-            ? "🟢 승인되었습니다."
-            : "🔴 거절 되었습니다."}
+              ? "🟠 승인이 되었지만 제작중입니다."
+              : row.Appcet === "381"
+                ? "🟢 승인되었습니다."
+                : "🔴 거절 되었습니다."}
         </TableCell>
       </TableRow>
       <TableRow className="dark:bg-[#181818]">
@@ -612,15 +631,15 @@ function Judgment() {
         newData.navMain[2].items = restApi.map((item) =>
           JSON.parse(item.Appcet) == 381
             ? {
-                title: JSON.parse(item.content).Servername,
-                url: `/site/server/View_vm/${item.id}`,
-              }
+              title: JSON.parse(item.content).Servername,
+              url: `/site/server/View_vm/${item.id}`,
+            }
             : JSON.parse(item.Appcet) == 3812
-            ? {
+              ? {
                 title: "제작중입니다.",
                 url: `/site/server/show_Accpet`,
               }
-            : {
+              : {
                 title: "아직 승인되지 않았습니다.",
                 url: `/site/server/show_Accpet`,
               }
