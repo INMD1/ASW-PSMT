@@ -12,6 +12,7 @@ import Show_Appect from "./Part_compomnet/DashBoard/show_Appect";
 import Judgment from "@/Part_compomnet/DashBoard/Admin/judgment.tsx";
 import Write_notice from "@/Part_compomnet/DashBoard/Admin/write_notice.tsx";
 import View_vm from "./Part_compomnet/DashBoard/View_vm";
+import Notfound from "./Part_compomnet/Error/notfound";
 
 function App() {
   return (
@@ -34,12 +35,15 @@ function App() {
           <Route path="/site/server/Admin/judgment" element={<Judgment />}></Route>
           <Route path="/site/server/Admin/write_notice" element={<Write_notice />}></Route>
           <Route path="/site/server/View_vm/:id" element={<View_vm />}></Route>
+
+          {/* 다른 페이지로 이동 할려고 할때 */}
+          <Route path='*' element={<Notfound />} />
         </Routes>
         <footer className="mobile_none">
           <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
           <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">
             © 2025{" "}
-            producer: 
+            producer:
             <a href="https://github.com/INMD1" className="hover:underline">
               INMD1
             </a>
